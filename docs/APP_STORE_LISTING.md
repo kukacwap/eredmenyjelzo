@@ -146,11 +146,11 @@ First release. 🎉
 |------|-------|
 | **Support URL** (kötelező) | pl. `https://github.com/kukacwap/eredmenyjelzo` |
 | **Marketing URL** (opcionális) | ugyanaz vagy egy landing page |
-| **Privacy Policy URL** (HealthKit miatt KÖTELEZŐ) | lásd `PRIVACY_POLICY.md`, hosztolva |
+| **Privacy Policy URL** (HealthKit miatt KÖTELEZŐ) | `https://kukacwap.github.io/eredmenyjelzo/` |
 
-> A Privacy Policy URL-nek nyilvánosan elérhető weboldalra kell mutatnia.
-> Legegyszerűbb: a `docs/PRIVACY_POLICY.md` tartalmát tedd ki GitHub Pages-re,
-> vagy a repo README-jébe, és arra hivatkozz.
+> Az adatvédelmi tájékoztató kész, hosztolható HTML oldalként a `docs/index.html`
+> fájlban van. GitHub Pages bekapcsolása után a fenti URL-en lesz elérhető –
+> a beállítás lépései a `RELEASE_CHECKLIST.md` „GitHub Pages" szakaszában.
 
 ---
 

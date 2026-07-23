@@ -79,8 +79,32 @@ Store-ba. Pipáld ki sorban.
 - [ ] Válaszd ki a feldolgozott **buildet**.
 - [ ] **App Privacy**: töltsd ki – „**Data Not Collected**" (lásd listing doc).
 - [ ] **Age Rating**: 4+.
-- [ ] **Privacy Policy URL**: a hosztolt `PRIVACY_POLICY.md` linkje (KÖTELEZŐ).
+- [ ] **Privacy Policy URL**: `https://kukacwap.github.io/eredmenyjelzo/`
+      (KÖTELEZŐ – előbb kapcsold be a GitHub Pages-t, lásd lentebb az 5b pontot).
 - [ ] Töltsd fel a **képernyőképeket** (lásd lentebb).
+
+---
+
+## 5b. GitHub Pages – adatvédelmi tájékoztató hosztolása
+
+Az adatvédelmi tájékoztató kész HTML oldalként a `docs/index.html`-ben van. A
+HealthKit miatt kötelező nyilvános URL-ről kiszolgálni. Bekapcsolás (egyszeri,
+a GitHub weboldalán):
+
+- [ ] A repo → **Settings** → bal oldalt **Pages**.
+- [ ] **Source**: „Deploy from a branch".
+- [ ] **Branch**: válaszd azt az ágat, amin a `docs/` mappa van (a fő ág, miután
+      ez a branch beolvad – ajánlott –, vagy ideiglenesen a
+      `claude/soccer-score-app-wldwq2` ág), **Folder**: `/docs` → **Save**.
+- [ ] 1-2 perc múlva az oldal itt lesz elérhető:
+      **`https://kukacwap.github.io/eredmenyjelzo/`**
+- [ ] Nyisd meg és ellenőrizd, hogy a magyar/angol tájékoztató látszik. Ezt az
+      URL-t írd az App Store Connect **Privacy Policy URL** mezőjébe.
+
+> Megjegyzés: a `docs/.nojekyll` fájl gondoskodik róla, hogy a Pages a HTML-t
+> változtatás nélkül szolgálja ki. Ha a repo privát, a GitHub Pages nyilvános
+> oldalhoz a repót publikussá kell tenni, vagy a tájékoztatót máshol (pl. saját
+> domain) hosztolni – a `docs/index.html` bárhol feltölthető statikus oldalként.
 
 ---
 

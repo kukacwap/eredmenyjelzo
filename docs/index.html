@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eredményjelző – Adatvédelmi tájékoztató</title>
+<meta name="description" content="Az Eredményjelző watchOS app adatvédelmi tájékoztatója. Az app nem gyűjt adatot.">
+<style>
+  :root {
+    --bg-top: #0a0c0e;
+    --bg-bot: #16181c;
+    --card: #17191e;
+    --line: #2a2d34;
+    --text: #e9eaec;
+    --muted: #9aa0a8;
+    --green: #34c759;
+    --white: #ffffff;
+    --accent: #34c759;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Rounded", "Segoe UI", system-ui, sans-serif;
+    color: var(--text);
+    background: linear-gradient(180deg, var(--bg-top), var(--bg-bot)) fixed;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 64px; }
+
+  header { text-align: center; padding: 24px 0 8px; }
+  .scoreboard {
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 2px; line-height: 1; margin-bottom: 14px;
+    font-weight: 800; letter-spacing: -1px;
+  }
+  .scoreboard .s6 { color: var(--green); font-size: 46px; }
+  .scoreboard .div { width: 40px; height: 2px; background: var(--line); margin: 3px 0; }
+  .scoreboard .s3 { color: var(--white); font-size: 46px; }
+  h1 { font-size: 1.5rem; margin: 6px 0 2px; }
+  .tagline { color: var(--muted); font-size: 0.95rem; margin: 0; }
+
+  .langbar { display: flex; justify-content: center; gap: 8px; margin: 22px 0 8px; }
+  .langbar button {
+    appearance: none; border: 1px solid var(--line); background: transparent;
+    color: var(--muted); padding: 6px 16px; border-radius: 999px;
+    font: inherit; font-size: 0.9rem; cursor: pointer; transition: all .15s;
+  }
+  .langbar button[aria-selected="true"] {
+    background: var(--green); border-color: var(--green); color: #04210d; font-weight: 700;
+  }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 18px;
+    padding: 22px 22px 8px; margin-top: 18px;
+  }
+  h2 { font-size: 1.15rem; margin: 22px 0 6px; }
+  h2:first-child { margin-top: 4px; }
+  p { margin: 8px 0; }
+  ul { margin: 8px 0; padding-left: 20px; }
+  li { margin: 4px 0; }
+  .highlight { color: var(--green); font-weight: 700; }
+  a { color: var(--green); }
+  .updated { color: var(--muted); font-size: 0.85rem; margin-top: 4px; }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 32px; }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="scoreboard" aria-hidden="true">
+      <span class="s6">6</span>
+      <span class="div"></span>
+      <span class="s3">3</span>
+    </div>
+    <h1>Eredményjelző</h1>
+    <p class="tagline" data-hu>Kispályás foci eredményjelző Apple Watchra</p>
+    <p class="tagline" data-en hidden>Football scoreboard for Apple Watch</p>
+  </header>
+
+  <div class="langbar" role="tablist" aria-label="Nyelv / Language">
+    <button id="btn-hu" role="tab" aria-selected="true" onclick="setLang('hu')">Magyar</button>
+    <button id="btn-en" role="tab" aria-selected="false" onclick="setLang('en')">English</button>
+  </div>
+
+  <!-- Magyar -->
+  <section class="card" data-hu>
+    <h2>Adatvédelmi tájékoztató</h2>
+    <p class="updated">Utolsó frissítés: 2026. július 23.</p>
+    <p>Az <strong>Eredményjelző</strong> alkalmazás („az App") tiszteletben tartja a
+      magánszférádat. Ez a tájékoztató leírja, hogyan kezeli az App az adatokat.</p>
+
+    <h2>Milyen adatokat gyűjtünk?</h2>
+    <p><span class="highlight">Semmilyet.</span> Az App nem gyűjt, nem tárol szerveren és
+      nem oszt meg semmilyen személyes adatot. Nincs felhasználói fiók, nincs regisztráció,
+      nincs analitika, és az App nem kommunikál semmilyen hálózati kiszolgálóval.</p>
+
+    <h2>Egészségügyi (HealthKit) adatok</h2>
+    <p>Amikor elindítasz egy meccset, az App a te engedélyeddel egy „labdarúgás" típusú
+      edzést indít az Apple HealthKit rendszerén keresztül. Ennek keretében:</p>
+    <ul>
+      <li><strong>olvassa</strong> a pulzusodat, az aktív kalóriát és a megtett távolságot,
+        hogy a meccs alatt megjeleníthesse őket;</li>
+      <li><strong>ír</strong> egy edzésbejegyzést az Egészség (Health) appba.</li>
+    </ul>
+    <p>Ezek az adatok <span class="highlight">kizárólag a te eszközödön maradnak</span>, az
+      Apple HealthKit biztonságos tárolójában. Az App nem továbbítja, nem másolja és nem
+      osztja meg ezeket az adatokat sem velünk, sem harmadik féllel. Az egészségügyi adatokat
+      semmilyen célra (pl. reklám) nem használjuk fel. A HealthKit hozzáférést bármikor
+      visszavonhatod az iPhone Egészség appjában vagy az óra beállításaiban.</p>
+
+    <h2>A meccs eredménye</h2>
+    <p>A meccs állása és a beállítások csak az App futása alatt, az eszköz memóriájában
+      léteznek. Ezeket nem küldjük el sehová.</p>
+
+    <h2>Gyermekek</h2>
+    <p>Az App nem gyűjt adatot senkitől, így gyermekektől sem.</p>
+
+    <h2>A tájékoztató változásai</h2>
+    <p>A tájékoztatót időnként frissíthetjük. A változásokat ezen az oldalon tesszük közzé a
+      fenti dátum frissítésével.</p>
+
+    <h2>Kapcsolat</h2>
+    <p>Kérdés esetén nyiss egy issue-t a projekt oldalán:
+      <a href="https://github.com/kukacwap/eredmenyjelzo">github.com/kukacwap/eredmenyjelzo</a>.</p>
+  </section>
+
+  <!-- English -->
+  <section class="card" data-en hidden>
+    <h2>Privacy Policy</h2>
+    <p class="updated">Last updated: July 23, 2026.</p>
+    <p><strong>Eredményjelző</strong> ("the App") respects your privacy. This policy explains
+      how the App handles data.</p>
+
+    <h2>What data do we collect?</h2>
+    <p><span class="highlight">None.</span> The App does not collect, store on any server, or
+      share any personal data. There is no user account, no sign-up, no analytics, and the App
+      does not communicate with any network server.</p>
+
+    <h2>Health (HealthKit) data</h2>
+    <p>When you start a match, with your permission the App starts a "Soccer" workout through
+      Apple HealthKit. As part of this it:</p>
+    <ul>
+      <li><strong>reads</strong> your heart rate, active energy, and distance in order to
+        display them during the match;</li>
+      <li><strong>writes</strong> a workout record to the Health app.</li>
+    </ul>
+    <p>This data <span class="highlight">stays entirely on your device</span>, in Apple's secure
+      HealthKit store. The App does not transmit, copy, or share this data with us or any third
+      party, and never uses health data for any purpose such as advertising. You can revoke
+      HealthKit access at any time in the Health app on iPhone or in your watch settings.</p>
+
+    <h2>Match score</h2>
+    <p>The match score and settings exist only in device memory while the App is running. They
+      are never sent anywhere.</p>
+
+    <h2>Children</h2>
+    <p>The App collects no data from anyone, including children.</p>
+
+    <h2>Changes to this policy</h2>
+    <p>We may update this policy from time to time. Changes will be posted on this page with an
+      updated date above.</p>
+
+    <h2>Contact</h2>
+    <p>Questions? Open an issue on the project page:
+      <a href="https://github.com/kukacwap/eredmenyjelzo">github.com/kukacwap/eredmenyjelzo</a>.</p>
+  </section>
+
+  <footer>
+    <p>© 2026 Eredményjelző · <span data-hu>Készült ⚽ szeretettel</span><span data-en hidden>Made with ⚽</span></p>
+  </footer>
+</div>
+
+<script>
+  function setLang(lang) {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-hu]').forEach(function (el) { el.hidden = (lang !== 'hu'); });
+    document.querySelectorAll('[data-en]').forEach(function (el) { el.hidden = (lang !== 'en'); });
+    document.getElementById('btn-hu').setAttribute('aria-selected', String(lang === 'hu'));
+    document.getElementById('btn-en').setAttribute('aria-selected', String(lang === 'en'));
+  }
+</script>
+</body>
+</html>
