@@ -24,6 +24,14 @@ Kispályás (5+5 / 6+6) amatőr foci eredményjelző Apple Watch alkalmazás 90 
 - Nyisd meg az `Eredmenyjelzo.xcodeproj` fájlt, állítsd be a saját fejlesztői csapatod (Signing & Capabilities), majd futtasd az **Eredmenyjelzo Watch App** targetet Apple Watch szimulátoron vagy órán.
 - Watch-only app, iPhone-os társalkalmazás nem szükséges.
 
+## Kiadás az App Store-ba
+
+Az App Store megjelenéshez szükséges minden anyag a [`docs/`](docs/) mappában:
+
+- [`docs/RELEASE_CHECKLIST.md`](docs/RELEASE_CHECKLIST.md) – lépésről lépésre kiadási folyamat (signing, HealthKit App ID, archiválás, feltöltés, review jegyzetek, képernyőkép-méretek).
+- [`docs/APP_STORE_LISTING.md`](docs/APP_STORE_LISTING.md) – App Store Connect szövegek magyarul és angolul (név, leírás, kulcsszavak, kategóriák, App Privacy válaszok).
+- [`docs/PRIVACY_POLICY.md`](docs/PRIVACY_POLICY.md) – adatvédelmi tájékoztató (HealthKit miatt kötelező, hosztolni kell és linkelni az App Store Connectben).
+
 ## Hangolás
 
 A tekerés érzékenysége a `ScoreboardView.swift` elején állítható:
