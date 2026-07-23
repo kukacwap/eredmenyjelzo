@@ -15,19 +15,23 @@ struct ScoreboardView: View {
     private let goalCooldown: TimeInterval = 1.2
 
     var body: some View {
-        ZStack {
-            VStack(spacing: 0) {
-                scoreText(match.greenScore, color: .green)
-                clock
-                scoreText(match.whiteScore, color: .white)
-            }
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        GeometryReader { geo in
+            ZStack {
+                VStack(spacing: 0) {
+                    scoreText(match.greenScore, color: .green, rowHeight: scoreRowHeight(in: geo.size.height))
+                    clock
+                    scoreText(match.whiteScore, color: .white, rowHeight: scoreRowHeight(in: geo.size.height))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            HStack {
-                Spacer()
-                menuButton
+                HStack {
+                    Spacer()
+                    menuButton
+                }
             }
+            .frame(width: geo.size.width, height: geo.size.height)
         }
+        .ignoresSafeArea(edges: .horizontal)
         .focusable()
         .digitalCrownRotation(
             $crownValue,
@@ -46,13 +50,24 @@ struct ScoreboardView: View {
         }
     }
 
-    private func scoreText(_ score: Int, color: Color) -> some View {
+    /// A futó óra hozzávetőleges magassága, hogy a két szám eloszthassa a maradék helyet.
+    private var clockHeight: CGFloat { match.showClock ? 22 : 0 }
+
+    /// A rendelkezésre álló magasságból kiszámolt egy-egy szám sormagassága,
+    /// hogy a számok minden kijelzőméreten a lehető legnagyobbak legyenek.
+    private func scoreRowHeight(in totalHeight: CGFloat) -> CGFloat {
+        max(0, (totalHeight - clockHeight) / 2)
+    }
+
+    private func scoreText(_ score: Int, color: Color, rowHeight: CGFloat) -> some View {
+        // A sormagasság ~1,2× a pontméretnek, ezért kicsit kisebb pontméret tölti ki
+        // a sávot függőleges levágás nélkül.
         Text("\(score)")
-            .font(.system(size: 56, weight: .heavy, design: .rounded).monospacedDigit())
+            .font(.system(size: rowHeight * 0.82, weight: .heavy, design: .rounded).monospacedDigit())
             .foregroundStyle(color)
-            .minimumScaleFactor(0.5)
+            .minimumScaleFactor(0.3)
             .lineLimit(1)
-            .frame(maxWidth: .infinity)
+            .frame(maxWidth: .infinity, minHeight: rowHeight, maxHeight: rowHeight)
     }
 
     @ViewBuilder
@@ -60,9 +75,10 @@ struct ScoreboardView: View {
         if match.showClock {
             TimelineView(.periodic(from: .now, by: 1)) { context in
                 Text(MatchModel.format(match.elapsedTime(at: context.date)))
-                    .font(.system(size: 15, weight: .semibold, design: .rounded).monospacedDigit())
+                    .font(.system(size: 16, weight: .semibold, design: .rounded).monospacedDigit())
                     .foregroundStyle(.yellow)
             }
+            .frame(height: clockHeight)
         }
     }
 
