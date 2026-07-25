@@ -97,7 +97,7 @@ struct MatchSettingsView: View {
                 Label("Saját csapat", systemImage: "person.fill")
             }
 
-            Text("A saját csapat kapja a gólt az Action Buttonnal és a Double Tappel.")
+            Text("Action Button: gól a saját csapatnak. Double Tap és a bal oldali + gomb: gól az ellenfélnek.")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
         }

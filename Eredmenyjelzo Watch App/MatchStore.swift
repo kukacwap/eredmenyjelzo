@@ -12,6 +12,13 @@ enum Team: String, Codable, CaseIterable, Identifiable {
         case .white: return "Fehér"
         }
     }
+
+    var opposite: Team {
+        switch self {
+        case .green: return .white
+        case .white: return .green
+        }
+    }
 }
 
 enum MatchPhase: String, Codable {

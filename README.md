@@ -9,7 +9,7 @@ Kispályás (5+5 / 6+6) amatőr foci eredményjelző Apple Watch alkalmazás 90 
 - **Gól-visszajelzés** – gólnál a szám rövid időre felnagyul és felderül, így a szem sarkából is látszik, hogy a bevitel regisztrálódott.
 - **Félidő és szüneteltethető óra** – a menüből indítható a **félidő** (az óra és az edzés is megáll), majd a **2. félidő**, ami a fociban szokásos módon a félidő hosszától számol tovább. Az óra bármikor megállítható és folytatható (sérülés, hosszú beadás). A félidő hossza állítható: 20 / 25 / 30 / 35 / 45 perc.
 - **Always-On kijelző** – lefordított csuklóval is látszik az állás: halványított számok, és a rendszer percenkénti frissítéséhez igazodva perc-alapú óra (`23′`), hogy ne álljon meg egy elavult másodpercértéken.
-- **Action Button (Ultra) és Double Tap** – a **saját csapatod** egy fizikai gombnyomással is gólt kaphat, ami játék közben sokkal könnyebb, mint koronát tekerni. Lásd lentebb a beállítást.
+- **Action Button (Ultra) és Double Tap** – gólt fizikai gombbal, illetve gesztussal is lehet adni, ami játék közben sokkal könnyebb, mint koronát tekerni. Az **Action Button a saját csapatodnak**, a **Double Tap az ellenfélnek** ad gólt, így a kettő együtt lefedi mindkét csapatot. Lásd lentebb a beállítást.
 - **Meccs végi összegzés** – végeredmény, tisztán játékkal töltött idő, átlag- és maximális pulzus, kalória, valamint a **gólok időrendje** percre.
 - **Automatikus mentés** – az állás minden gólnál mentődik, így ha a rendszer kilövi az appot vagy újraindul az óra, az indító képernyő felajánlja a **félbehagyott meccs folytatását**.
 - **Menü gomb** – a képernyő jobb szélén, középen lévő gombbal nyílik a menü: eredmény szerkesztése (+/-, nullázás), óra megállítása/folytatása, félidő, futó óra mutatása, saját csapat, aktuális pulzus, meccs befejezése.
@@ -18,16 +18,24 @@ Kispályás (5+5 / 6+6) amatőr foci eredményjelző Apple Watch alkalmazás 90 
 ## Használat
 
 1. Nyisd meg az appot, koppints a **Meccs indítása** gombra (első indításkor engedélyezd a HealthKit hozzáférést).
-2. Gólnál tekerd a Digital Crownt a gólt szerző csapat iránya felé (fel = zöld, le = fehér), vagy nyomd az Action Buttont / használd a Double Tapet a saját csapatodhoz.
+2. Gólnál tekerd a Digital Crownt a gólt szerző csapat iránya felé (fel = zöld, le = fehér). Vagy: **Action Button** a saját csapatodnak, **Double Tap** az ellenfélnek.
 3. A jobb oldali menü gombbal szerkesztheted az eredményt, indíthatsz félidőt, megállíthatod az órát, és befejezheted a meccset.
 
 ## Action Button és Double Tap beállítása
 
+A kettő **különböző csapatot** céloz, hogy játék közben egyik se igényelje a korona tekerését:
+
+| Bevitel | Kinek ad gólt |
+|---------|---------------|
+| **Action Button** (narancs gomb, Ultra) | a **saját** csapatodnak |
+| **Double Tap**, illetve a bal oldali **+** gomb | az **ellenfélnek** |
+| Digital Crown fel / le | zöld / fehér (a képernyő szerint) |
+
 **Action Button (Apple Watch Ultra):** Óra → Beállítások → **Action Button** → *Parancs (Shortcut)* → válaszd a **„Gól"** parancsot. Ezután játék közben egy narancs gombnyomás gólt ad a saját csapatodnak, az app megnyitása nélkül. Téves nyomás esetén a **„Gól visszavonása"** parancs is elérhető (pl. a Parancsok appból vagy Siriből).
 
-**Double Tap:** a képernyő bal szélén, középen lévő **+** gomb az app elsődleges művelete, ezért a Double Tap (hüvelyk-mutatóujj koppintás) is ezt hívja meg. Ehhez **Apple Watch Series 9 / Ultra 2 vagy újabb** kell – az első generációs Ultrán ez a gesztus nem támogatott, de a + gomb és az Action Button ott is működik.
+**Double Tap:** a képernyő bal szélén, középen lévő **+** gomb az app elsődleges művelete, ezért a Double Tap (hüvelyk-mutatóujj koppintás) is ezt hívja meg, vagyis az ellenfélnek ad gólt. Ehhez **Apple Watch Series 9 / Ultra 2 vagy újabb** kell – az első generációs Ultrán ez a gesztus nem támogatott, de a **+** gomb és az Action Button ott is működik.
 
-Mindkettő a **saját csapatodnak** ad gólt, amit a Beállításokban (indító képernyő) vagy a menüben állíthatsz zöldre/fehérre.
+Hogy melyik a „saját" csapat, azt a Beállításokban (indító képernyő) vagy a menüben állíthatod zöldre/fehérre – a **+** gomb színe és az Action Button célja ehhez igazodik.
 
 ## Fordítás
 

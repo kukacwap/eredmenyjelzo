@@ -82,7 +82,8 @@ IDŐ
 GYORS BEVITEL
 • Apple Watch Ultrán az Action Buttonhoz rendelhető a gól: egy narancs
   gombnyomás, és a saját csapatod kap egyet.
-• Double Tap (Series 9 / Ultra 2-től) ugyanezt teszi.
+• Double Tap (Series 9 / Ultra 2-től) az ellenfélnek ad gólt, így a két
+  bevitel együtt lefedi mindkét csapatot – korona tekerése nélkül.
 
 MENÜ ÉS BIZTONSÁG
 • Eredmény kézi szerkesztése (+/–), téves gól javítása, nullázás.
@@ -128,7 +129,8 @@ TIME
 FAST INPUT
 • On Apple Watch Ultra, assign scoring to the Action Button: one press on the
   orange button adds a goal for your team.
-• Double Tap (Series 9 / Ultra 2 and later) does the same.
+• Double Tap (Series 9 / Ultra 2 and later) adds a goal for the other team, so
+  the two inputs together cover both sides — no crown needed.
 
 MENU AND SAFETY
 • Edit the score manually (+/–), fix a mistaken goal, or reset.

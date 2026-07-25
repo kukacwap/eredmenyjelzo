@@ -42,6 +42,9 @@ final class MatchModel: ObservableObject {
         set { objectWillChange.send(); MatchSettings.myTeam = newValue }
     }
 
+    /// Az ellenfél – a Double Tap és a képernyő bal oldali gombja ennek ad gólt.
+    var otherTeam: Team { MatchSettings.myTeam.opposite }
+
     var halfLengthMinutes: Int {
         get { MatchSettings.halfLengthMinutes }
         set { objectWillChange.send(); MatchSettings.halfLengthMinutes = newValue }

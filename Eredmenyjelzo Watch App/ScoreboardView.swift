@@ -171,26 +171,28 @@ struct ScoreboardView: View {
 
     private var sideControls: some View {
         HStack {
-            myTeamGoalButton
+            otherTeamGoalButton
             Spacer()
             menuButton
         }
     }
 
-    /// Gól a saját csapatnak. Ez egyben a Double Tap célja is (Series 9 / Ultra 2-től).
-    private var myTeamGoalButton: some View {
+    /// Gól az ellenfélnek. Ez az app elsődleges művelete, ezért a Double Tap is ezt hívja
+    /// (Series 9 / Ultra 2-től). A saját csapat az Action Buttonnal kap gólt, így a két
+    /// fizikai bevitel lefedi mindkét csapatot.
+    private var otherTeamGoalButton: some View {
         Button {
-            match.goal(for: match.myTeam)
+            match.goal(for: match.otherTeam)
         } label: {
             Image(systemName: "plus")
                 .font(.system(size: 15, weight: .bold))
-                .foregroundStyle(match.myTeam == .green ? Color.green : Color.white)
+                .foregroundStyle(match.otherTeam == .green ? Color.green : Color.white)
                 .frame(width: 34, height: 60)
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
         .handGestureShortcut(.primaryAction)
-        .accessibilityLabel("Gól a saját csapatnak: \(match.myTeam.displayName)")
+        .accessibilityLabel("Gól az ellenfélnek: \(match.otherTeam.displayName)")
     }
 
     private var menuButton: some View {
