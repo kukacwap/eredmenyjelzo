@@ -71,16 +71,30 @@ MŰKÖDÉS
   fehér csapat kap egy gólt. Külön rezgés jelzi, melyik csapat szerzett.
 • A véletlen tekerés nem számít: néhány kattanás kell egy gólhoz, és gól után
   rövid ideig nem fogad újabbat.
+• Always-On kijelzőn lefordított csuklóval is látod az állást.
 
-MENÜ
+IDŐ
+• Félidő egy koppintással: megáll az óra és az edzés is.
+• A 2. félidő a fociban szokásos módon a félidő idejétől számol tovább.
+• Az óra bármikor megállítható és folytatható (sérülés, hosszú beadás).
+• Állítható félidőhossz: 20, 25, 30, 35 vagy 45 perc.
+
+GYORS BEVITEL
+• Apple Watch Ultrán az Action Buttonhoz rendelhető a gól: egy narancs
+  gombnyomás, és a saját csapatod kap egyet.
+• Double Tap (Series 9 / Ultra 2-től) ugyanezt teszi.
+
+MENÜ ÉS BIZTONSÁG
 • Eredmény kézi szerkesztése (+/–), téves gól javítása, nullázás.
 • Futó meccsóra ki- és bekapcsolása.
-• Meccs befejezése egy koppintással.
+• Az állás minden gólnál mentődik: ha az óra újraindul, folytathatod a meccset.
 
-EDZÉS INTEGRÁCIÓ
+EDZÉS INTEGRÁCIÓ ÉS ÖSSZEGZÉS
 • A meccs indításakor labdarúgás edzés indul: megy a pulzus- és
   kalóriamérés, a meccs pedig elmentődik az Egészség appba.
 • Az app a háttérben is aktív marad a teljes meccs alatt.
+• A meccs végén összegzés: végeredmény, játékidő, átlag- és max pulzus,
+  kalória, és a gólok időrendje.
 
 Az Eredményjelző kizárólag az órán fut, nem igényel iPhone-os társalkalmazást.
 Nincs regisztráció, nincs reklám, nincs adatgyűjtés.
@@ -103,16 +117,30 @@ HOW IT WORKS
   white team. A distinct haptic tells you which side scored.
 • Accidental turns don't count: a goal needs a few clicks, and there's a
   short cooldown after each goal.
+• Always-On display keeps the score visible without raising your wrist.
 
-MENU
+TIME
+• Halftime with one tap: both the clock and the workout pause.
+• The second half continues from the half length, as in real football.
+• Pause and resume the clock any time (injuries, long stoppages).
+• Configurable half length: 20, 25, 30, 35, or 45 minutes.
+
+FAST INPUT
+• On Apple Watch Ultra, assign scoring to the Action Button: one press on the
+  orange button adds a goal for your team.
+• Double Tap (Series 9 / Ultra 2 and later) does the same.
+
+MENU AND SAFETY
 • Edit the score manually (+/–), fix a mistaken goal, or reset.
 • Toggle the running match clock on or off.
-• End the match with a single tap.
+• The score is saved on every goal, so you can resume after a restart.
 
-WORKOUT INTEGRATION
+WORKOUT INTEGRATION AND SUMMARY
 • Starting a match starts a Soccer workout: heart rate and calories are
   tracked, and the match is saved to the Health app.
 • The app stays active in the background for the whole match.
+• End-of-match summary: final score, played time, average and max heart rate,
+  calories, and the timeline of goals.
 
 Eredményjelző runs entirely on the watch – no companion iPhone app required.
 No sign-up, no ads, no data collection.

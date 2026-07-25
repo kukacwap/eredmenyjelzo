@@ -6,17 +6,9 @@ struct EditScoreView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 10) {
-                teamRow(name: "Zöld",
-                        color: .green,
-                        score: match.greenScore,
-                        onMinus: { match.removeGoal(from: .green) },
-                        onPlus: { match.goal(for: .green) })
-
-                teamRow(name: "Fehér",
-                        color: .white,
-                        score: match.whiteScore,
-                        onMinus: { match.removeGoal(from: .white) },
-                        onPlus: { match.goal(for: .white) })
+                ForEach(Team.allCases) { team in
+                    teamRow(team)
+                }
 
                 Button(role: .destructive) {
                     match.resetScore()
@@ -30,27 +22,28 @@ struct EditScoreView: View {
         .navigationTitle("Eredmény")
     }
 
-    private func teamRow(name: String,
-                         color: Color,
-                         score: Int,
-                         onMinus: @escaping () -> Void,
-                         onPlus: @escaping () -> Void) -> some View {
-        VStack(spacing: 4) {
-            Text(name)
+    private func teamRow(_ team: Team) -> some View {
+        let color: Color = team == .green ? .green : .white
+        return VStack(spacing: 4) {
+            Text(team.displayName)
                 .font(.footnote.weight(.semibold))
                 .foregroundStyle(color)
 
             HStack(spacing: 8) {
-                Button(action: onMinus) {
+                Button {
+                    match.removeGoal(from: team)
+                } label: {
                     Image(systemName: "minus")
                 }
 
-                Text("\(score)")
+                Text("\(match.score(for: team))")
                     .font(.title2.weight(.bold).monospacedDigit())
                     .foregroundStyle(color)
                     .frame(minWidth: 36)
 
-                Button(action: onPlus) {
+                Button {
+                    match.goal(for: team)
+                } label: {
                     Image(systemName: "plus")
                 }
             }

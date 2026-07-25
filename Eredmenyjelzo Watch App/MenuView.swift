@@ -16,8 +16,44 @@ struct MenuView: View {
                     Label("Eredmény szerkesztése", systemImage: "plusminus.circle")
                 }
 
-                Toggle(isOn: $match.showClock) {
+                if match.phase.isPlaying {
+                    Button {
+                        if match.isClockRunning {
+                            match.pauseClock()
+                            workoutManager.pauseWorkout()
+                        } else {
+                            match.resumeClock()
+                            workoutManager.resumeWorkout()
+                        }
+                        dismiss()
+                    } label: {
+                        Label(match.isClockRunning ? "Óra megállítása" : "Óra folytatása",
+                              systemImage: match.isClockRunning ? "pause.circle" : "play.circle")
+                    }
+                }
+
+                if match.phase == .firstHalf {
+                    Button {
+                        match.startHalftime()
+                        workoutManager.pauseWorkout()
+                        dismiss()
+                    } label: {
+                        Label("Félidő", systemImage: "flag.2.crossed")
+                    }
+                }
+
+                Toggle(isOn: Binding(get: { match.showClock },
+                                     set: { match.showClock = $0 })) {
                     Label("Futó óra mutatása", systemImage: "stopwatch")
+                }
+
+                Picker(selection: Binding(get: { match.myTeam },
+                                          set: { match.myTeam = $0 })) {
+                    ForEach(Team.allCases) { team in
+                        Text(team.displayName).tag(team)
+                    }
+                } label: {
+                    Label("Saját csapat", systemImage: "person.fill")
                 }
 
                 if workoutManager.heartRate > 0 {
@@ -42,7 +78,7 @@ struct MenuView: View {
                                 titleVisibility: .visible) {
                 Button("Meccs vége", role: .destructive) {
                     workoutManager.endWorkout()
-                    match.end()
+                    match.endMatch()
                     dismiss()
                 }
                 Button("Mégse", role: .cancel) {}

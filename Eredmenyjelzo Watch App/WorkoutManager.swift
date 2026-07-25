@@ -4,10 +4,15 @@ import HealthKit
 final class WorkoutManager: NSObject, ObservableObject {
     @Published var isWorkoutActive = false
     @Published var heartRate: Double = 0
+    @Published var averageHeartRate: Double = 0
+    @Published var maxHeartRate: Double = 0
+    @Published var activeEnergy: Double = 0
 
     private let healthStore = HKHealthStore()
     private var session: HKWorkoutSession?
     private var builder: HKLiveWorkoutBuilder?
+
+    private let heartRateUnit = HKUnit.count().unitDivided(by: .minute())
 
     func requestAuthorization() {
         guard HKHealthStore.isHealthDataAvailable() else { return }
@@ -44,6 +49,11 @@ final class WorkoutManager: NSObject, ObservableObject {
             self.session = session
             self.builder = builder
 
+            heartRate = 0
+            averageHeartRate = 0
+            maxHeartRate = 0
+            activeEnergy = 0
+
             let start = Date()
             session.startActivity(with: start)
             builder.beginCollection(withStart: start) { _, _ in }
@@ -51,6 +61,17 @@ final class WorkoutManager: NSObject, ObservableObject {
             self.session = nil
             self.builder = nil
         }
+    }
+
+    /// Félidőben és óramegállításnál az edzést is szüneteltetjük.
+    func pauseWorkout() {
+        guard let session, session.state == .running else { return }
+        session.pause()
+    }
+
+    func resumeWorkout() {
+        guard let session, session.state == .paused else { return }
+        session.resume()
     }
 
     func endWorkout() {
@@ -73,6 +94,7 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
                     DispatchQueue.main.async {
                         self?.session = nil
                         self?.builder = nil
+                        // Az összegzőn kellenek az átlag/max értékek, azokat megtartjuk.
                         self?.heartRate = 0
                     }
                 }
@@ -92,14 +114,25 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
 extension WorkoutManager: HKLiveWorkoutBuilderDelegate {
     func workoutBuilder(_ workoutBuilder: HKLiveWorkoutBuilder,
                         didCollectDataOf collectedTypes: Set<HKSampleType>) {
-        guard let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate),
-              collectedTypes.contains(heartRateType),
-              let statistics = workoutBuilder.statistics(for: heartRateType) else { return }
+        for type in collectedTypes {
+            guard let quantityType = type as? HKQuantityType,
+                  let statistics = workoutBuilder.statistics(for: quantityType) else { continue }
 
-        let unit = HKUnit.count().unitDivided(by: .minute())
-        let bpm = statistics.mostRecentQuantity()?.doubleValue(for: unit) ?? 0
-        DispatchQueue.main.async {
-            self.heartRate = bpm
+            if quantityType == HKQuantityType.quantityType(forIdentifier: .heartRate) {
+                let current = statistics.mostRecentQuantity()?.doubleValue(for: heartRateUnit) ?? 0
+                let average = statistics.averageQuantity()?.doubleValue(for: heartRateUnit) ?? 0
+                let maximum = statistics.maximumQuantity()?.doubleValue(for: heartRateUnit) ?? 0
+                DispatchQueue.main.async {
+                    self.heartRate = current
+                    self.averageHeartRate = average
+                    self.maxHeartRate = maximum
+                }
+            } else if quantityType == HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) {
+                let kilocalories = statistics.sumQuantity()?.doubleValue(for: .kilocalorie()) ?? 0
+                DispatchQueue.main.async {
+                    self.activeEnergy = kilocalories
+                }
+            }
         }
     }
 

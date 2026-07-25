@@ -18,10 +18,15 @@ struct RootView: View {
     @EnvironmentObject private var match: MatchModel
 
     var body: some View {
-        if match.isRunning {
-            ScoreboardView()
-        } else {
+        switch match.phase {
+        case .notStarted:
             StartView()
+        case .firstHalf, .secondHalf:
+            ScoreboardView()
+        case .halftime:
+            HalftimeView()
+        case .finished:
+            SummaryView()
         }
     }
 }
