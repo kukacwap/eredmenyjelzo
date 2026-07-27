@@ -71,6 +71,7 @@ enum MatchSettings {
     private static let halfLengthKey = "settings.halfLengthMinutes"
     private static let showClockKey = "settings.showClock"
     private static let myTeamKey = "settings.myTeam"
+    private static let keeperIntervalKey = "settings.keeperIntervalSeconds"
 
     static var halfLengthMinutes: Int {
         get {
@@ -90,6 +91,15 @@ enum MatchSettings {
         get { Team(rawValue: UserDefaults.standard.string(forKey: myTeamKey) ?? "") ?? .green }
         set { UserDefaults.standard.set(newValue.rawValue, forKey: myTeamKey) }
     }
+
+    /// Kapuscsere-figyelmeztetés köze másodpercben. 0 = kikapcsolva.
+    static var keeperIntervalSeconds: Int {
+        get { UserDefaults.standard.integer(forKey: keeperIntervalKey) }
+        set { UserDefaults.standard.set(max(0, newValue), forKey: keeperIntervalKey) }
+    }
+
+    /// A választható kapuscsere-közök: 3:00-tól 15:00-ig, 30 másodperces lépésekben.
+    static let keeperIntervalOptions: [Int] = [0] + stride(from: 180, through: 900, by: 30).map { $0 }
 }
 
 extension MatchSnapshot {
@@ -118,9 +128,19 @@ extension MatchSnapshot {
         }
     }
 
-    /// Tisztán játékkal töltött idő (a szünetek nélkül).
+    /// Tisztán játékkal töltött idő (a szünetek nélkül), a lezárt szakaszokból.
     var totalPlayedTime: TimeInterval {
         firstHalfAccumulated + secondHalfAccumulated
+    }
+
+    /// Tisztán játékkal töltött idő az éppen futó szakasszal együtt.
+    /// A kapuscsere-ciklus ezt követi, így szünetben nem szalad tovább.
+    func playedTime(at date: Date) -> TimeInterval {
+        var total = totalPlayedTime
+        if let segmentStart, phase.isPlaying {
+            total += max(0, date.timeIntervalSince(segmentStart))
+        }
+        return total
     }
 
     func score(for team: Team) -> Int {
@@ -174,5 +194,10 @@ enum MatchStore {
     /// Focis perc-jelölés, always-on kijelzőn és a gólnaplóban.
     static func formatMinute(_ interval: TimeInterval) -> String {
         "\(max(0, Int(interval) / 60))′"
+    }
+
+    /// Kapuscsere-köz megjelenítése, pl. „7:30" vagy „Ki".
+    static func formatKeeperInterval(_ seconds: Int) -> String {
+        seconds <= 0 ? "Ki" : String(format: "%d:%02d", seconds / 60, seconds % 60)
     }
 }

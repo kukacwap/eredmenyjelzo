@@ -6,6 +6,10 @@ final class MatchModel: ObservableObject {
     /// A legutóbbi saját mentés ideje – ennél régebbi külső mentést nem töltünk vissza.
     private var lastPersistedAt: Date = .distantPast
 
+    /// Minden kapuscsere-jelzésnél nő – a képernyő erre villantja fel a figyelmeztetést.
+    @Published private(set) var keeperAlertPulse = 0
+    private var keeperTimer: Timer?
+
     init() {
         // Induláskor nem folytatunk automatikusan: a StartView kérdezi meg.
         state = MatchSnapshot()
@@ -44,6 +48,16 @@ final class MatchModel: ObservableObject {
 
     /// Az ellenfél – a Double Tap és a képernyő bal oldali gombja ennek ad gólt.
     var otherTeam: Team { MatchSettings.myTeam.opposite }
+
+    /// Kapuscsere-figyelmeztetés köze másodpercben, 0 = kikapcsolva.
+    var keeperIntervalSeconds: Int {
+        get { MatchSettings.keeperIntervalSeconds }
+        set {
+            objectWillChange.send()
+            MatchSettings.keeperIntervalSeconds = newValue
+            rescheduleKeeperAlert()
+        }
+    }
 
     var halfLengthMinutes: Int {
         get { MatchSettings.halfLengthMinutes }
@@ -116,6 +130,7 @@ final class MatchModel: ObservableObject {
         MatchStore.clear()
         state = MatchSnapshot()
         lastPersistedAt = Date()
+        rescheduleKeeperAlert()
     }
 
     // MARK: - Óra
@@ -182,10 +197,70 @@ final class MatchModel: ObservableObject {
         persist()
     }
 
+    // MARK: - Kapuscsere
+
+    /// Mennyi van hátra a következő kapuscseréig, ha a figyelmeztetés be van kapcsolva.
+    func timeUntilKeeperChange(at date: Date) -> TimeInterval? {
+        let interval = TimeInterval(MatchSettings.keeperIntervalSeconds)
+        guard interval > 0, state.phase.isPlaying else { return nil }
+        let played = state.playedTime(at: date)
+        return interval - played.truncatingRemainder(dividingBy: interval)
+    }
+
+    /// Az app előtérbe kerülésekor hívjuk: felfüggesztés alatt a timer nem jár.
+    func refreshKeeperSchedule() {
+        rescheduleKeeperAlert()
+    }
+
+    /// Pontosan a következő ciklushatárra időzít, nem másodpercenként pollozunk.
+    private func rescheduleKeeperAlert() {
+        keeperTimer?.invalidate()
+        keeperTimer = nil
+
+        let interval = TimeInterval(MatchSettings.keeperIntervalSeconds)
+        guard interval > 0, state.phase.isPlaying, state.isClockRunning else { return }
+
+        let played = state.playedTime(at: Date())
+        var remaining = interval - played.truncatingRemainder(dividingBy: interval)
+        // Épp a határon állva ne tüzeljen azonnal újra.
+        if remaining < 0.5 { remaining += interval }
+
+        let timer = Timer(timeInterval: remaining, repeats: false) { [weak self] _ in
+            self?.fireKeeperAlert()
+        }
+        RunLoop.main.add(timer, forMode: .common)
+        keeperTimer = timer
+    }
+
+    deinit {
+        keeperTimer?.invalidate()
+    }
+
+    private func fireKeeperAlert() {
+        keeperAlertPulse += 1
+        playKeeperHaptic()
+        rescheduleKeeperAlert()
+    }
+
+    /// Kb. 2 másodpercnyi folyamatos rezgés: a watchOS csak rövid mintákat játszik le,
+    /// ezért sűrűn ismételjük őket.
+    private func playKeeperHaptic() {
+        let device = WKInterfaceDevice.current()
+        let pulseCount = 6
+        let spacing = 0.33
+        for index in 0..<pulseCount {
+            DispatchQueue.main.asyncAfter(deadline: .now() + spacing * Double(index)) {
+                device.play(.notification)
+            }
+        }
+    }
+
     // MARK: - Mentés
 
     private func persist() {
         lastPersistedAt = MatchStore.save(state)
+        // Minden állapotváltás (félidő, szünet, folytatás) érinti a kapuscsere-ciklust.
+        rescheduleKeeperAlert()
     }
 
     /// Visszaolvassa az állást, ha kívülről módosult (Action Button / Double Tap intent).
@@ -193,6 +268,7 @@ final class MatchModel: ObservableObject {
         guard let snapshot = MatchStore.load(), snapshot.savedAt > lastPersistedAt else { return }
         state = snapshot
         lastPersistedAt = snapshot.savedAt
+        rescheduleKeeperAlert()
     }
 
     private func observeExternalChanges() {

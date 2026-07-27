@@ -14,6 +14,7 @@ struct ScoreboardView: View {
     @State private var isMenuPresented = false
     @State private var flashingTeam: Team?
     @State private var showCrownHints = true
+    @State private var showKeeperBanner = false
 
     /// Ennyi kattanásnyi tekerés kell egy gólhoz, hogy a véletlen érintés ne számoljon.
     private let goalThreshold: Double = 3
@@ -39,6 +40,10 @@ struct ScoreboardView: View {
                 if !isLuminanceReduced {
                     sideControls
                 }
+
+                if showKeeperBanner {
+                    keeperBanner
+                }
             }
             .frame(width: geo.size.width, height: geo.size.height)
         }
@@ -60,7 +65,13 @@ struct ScoreboardView: View {
         .onChange(of: match.whiteScore) { _, _ in flash(.white) }
         .onChange(of: scenePhase) { _, newPhase in
             // Az Action Button intent külön írja az állást – aktiváláskor beolvassuk.
-            if newPhase == .active { match.reloadFromStore() }
+            if newPhase == .active {
+                match.reloadFromStore()
+                match.refreshKeeperSchedule()
+            }
+        }
+        .onChange(of: match.keeperAlertPulse) { _, _ in
+            showKeeperAlert()
         }
         .task {
             try? await Task.sleep(for: .seconds(4))
@@ -151,6 +162,31 @@ struct ScoreboardView: View {
     }
 
     // MARK: - Kezelőelemek
+
+    /// Kapuscsere jelzése: a rezgés mellé látható visszajelzés, hogy egyértelmű legyen,
+    /// mit jelent a vibrálás.
+    private var keeperBanner: some View {
+        Text("KAPUSCSERE")
+            .font(.system(size: 15, weight: .heavy, design: .rounded))
+            .tracking(1)
+            .foregroundStyle(.black)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .background(Capsule().fill(.orange))
+            .shadow(color: .black.opacity(0.6), radius: 8)
+            .transition(.scale.combined(with: .opacity))
+            .allowsHitTesting(false)
+    }
+
+    private func showKeeperAlert() {
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+            showKeeperBanner = true
+        }
+        Task {
+            try? await Task.sleep(for: .seconds(4))
+            withAnimation(.easeOut(duration: 0.4)) { showKeeperBanner = false }
+        }
+    }
 
     /// A korona irányának emlékeztetője az első pár másodpercben.
     private var crownHints: some View {

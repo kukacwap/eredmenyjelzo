@@ -56,6 +56,25 @@ struct MenuView: View {
                     Label("Saját csapat", systemImage: "person.fill")
                 }
 
+                Picker(selection: Binding(get: { match.keeperIntervalSeconds },
+                                          set: { match.keeperIntervalSeconds = $0 })) {
+                    ForEach(MatchSettings.keeperIntervalOptions, id: \.self) { seconds in
+                        Text(MatchStore.formatKeeperInterval(seconds)).tag(seconds)
+                    }
+                } label: {
+                    Label("Kapuscsere", systemImage: "hand.raised.fill")
+                }
+
+                if let remaining = match.timeUntilKeeperChange(at: Date()) {
+                    HStack {
+                        Label("Következő csere", systemImage: "timer")
+                        Spacer()
+                        Text(MatchStore.formatClock(remaining))
+                            .monospacedDigit()
+                    }
+                    .foregroundStyle(.orange)
+                }
+
                 if workoutManager.heartRate > 0 {
                     HStack {
                         Label("Pulzus", systemImage: "heart.fill")

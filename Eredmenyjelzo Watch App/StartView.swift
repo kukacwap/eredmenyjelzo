@@ -97,6 +97,19 @@ struct MatchSettingsView: View {
                 Label("Saját csapat", systemImage: "person.fill")
             }
 
+            Picker(selection: Binding(get: { match.keeperIntervalSeconds },
+                                      set: { match.keeperIntervalSeconds = $0 })) {
+                ForEach(MatchSettings.keeperIntervalOptions, id: \.self) { seconds in
+                    Text(MatchStore.formatKeeperInterval(seconds)).tag(seconds)
+                }
+            } label: {
+                Label("Kapuscsere", systemImage: "hand.raised.fill")
+            }
+
+            Text("Kapuscsere: ennyi játékidőnként 2 másodperces rezgés jelzi, hogy jön a csere. Szünetben nem számol tovább.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
             Text("Action Button: gól a saját csapatnak. Double Tap és a bal oldali + gomb: gól az ellenfélnek.")
                 .font(.caption2)
                 .foregroundStyle(.secondary)

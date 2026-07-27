@@ -79,6 +79,13 @@ IDŐ
 • Az óra bármikor megállítható és folytatható (sérülés, hosszú beadás).
 • Állítható félidőhossz: 20, 25, 30, 35 vagy 45 perc.
 
+KAPUSCSERE
+• Állítsd be, milyen közönként cserélődik a kapus (30 másodperces
+  lépésekben, tipikusan 7:00 vagy 7:30).
+• Amikor jön a csere, az óra 2 másodpercig rezeg, és a képernyőn
+  felvillan a jelzés – nem kell az órát nézegetni.
+• A ciklus a tiszta játékidőt követi: szünetben nem szalad tovább.
+
 GYORS BEVITEL
 • Apple Watch Ultrán az Action Buttonhoz rendelhető a gól: egy narancs
   gombnyomás, és a saját csapatod kap egyet.
@@ -125,6 +132,13 @@ TIME
 • The second half continues from the half length, as in real football.
 • Pause and resume the clock any time (injuries, long stoppages).
 • Configurable half length: 20, 25, 30, 35, or 45 minutes.
+
+GOALKEEPER ROTATION
+• Set how often the keeper changes (in 30-second steps, typically 7:00
+  or 7:30).
+• When it's time, the watch buzzes for 2 seconds and shows an on-screen
+  alert — no need to watch the clock.
+• The cycle follows actual played time, so it doesn't run during breaks.
 
 FAST INPUT
 • On Apple Watch Ultra, assign scoring to the Action Button: one press on the
