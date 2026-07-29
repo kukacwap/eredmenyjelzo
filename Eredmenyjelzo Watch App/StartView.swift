@@ -41,6 +41,7 @@ struct StartView: View {
         }
         .onAppear {
             workoutManager.requestAuthorization()
+            match.requestAlertAuthorization()
             hasResumableMatch = match.hasResumableMatch
         }
     }
@@ -75,13 +76,11 @@ struct StartView: View {
 struct MatchSettingsView: View {
     @EnvironmentObject private var match: MatchModel
 
-    private let halfLengthOptions = [20, 25, 30, 35, 45]
-
     var body: some View {
         List {
             Picker(selection: Binding(get: { match.halfLengthMinutes },
                                       set: { match.halfLengthMinutes = $0 })) {
-                ForEach(halfLengthOptions, id: \.self) { minutes in
+                ForEach(MatchSettings.halfLengthOptions, id: \.self) { minutes in
                     Text("\(minutes) perc").tag(minutes)
                 }
             } label: {
@@ -109,6 +108,10 @@ struct MatchSettingsView: View {
             Text("Kapuscsere: ennyi játékidőnként 2 másodperces rezgés jelzi, hogy jön a csere. Szünetben nem számol tovább.")
                 .font(.caption2)
                 .foregroundStyle(.secondary)
+
+            Text("Ha játék közben nem érzed: Beállítások → Hangok és haptika → Haptika erőssége feljebb, és a Kiemelt haptika bekapcsolva.")
+                .font(.caption2)
+                .foregroundStyle(.orange)
 
             Text("Action Button: gól a saját csapatnak. Double Tap és a bal oldali + gomb: gól az ellenfélnek.")
                 .font(.caption2)

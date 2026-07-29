@@ -1,4 +1,5 @@
 import Foundation
+import UserNotifications
 import WatchKit
 
 final class MatchModel: ObservableObject {
@@ -212,10 +213,23 @@ final class MatchModel: ObservableObject {
         rescheduleKeeperAlert()
     }
 
+    /// Értesítési engedély – enélkül a csuklóleengedett (háttérbe került) állapotban
+    /// nem tudunk megbízhatóan rezegtetni.
+    func requestAlertAuthorization() {
+        UNUserNotificationCenter.current().delegate = KeeperNotificationDelegate.shared
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound]) { _, _ in }
+    }
+
     /// Pontosan a következő ciklushatárra időzít, nem másodpercenként pollozunk.
+    ///
+    /// Két csatornán jelzünk, mert a `WKInterfaceDevice.play` csak akkor megbízható,
+    /// ha az app aktív: a timer a képernyős jelzést és az azonnali rezgést adja,
+    /// a helyi értesítés pedig csuklóleengedve, háttérben is felébreszti az órát.
     private func rescheduleKeeperAlert() {
         keeperTimer?.invalidate()
         keeperTimer = nil
+        UNUserNotificationCenter.current()
+            .removePendingNotificationRequests(withIdentifiers: [Self.keeperNotificationID])
 
         let interval = TimeInterval(MatchSettings.keeperIntervalSeconds)
         guard interval > 0, state.phase.isPlaying, state.isClockRunning else { return }
@@ -230,10 +244,29 @@ final class MatchModel: ObservableObject {
         }
         RunLoop.main.add(timer, forMode: .common)
         keeperTimer = timer
+
+        scheduleKeeperNotification(after: remaining)
     }
 
     deinit {
         keeperTimer?.invalidate()
+    }
+
+    private static let keeperNotificationID = "keeper.change"
+
+    private func scheduleKeeperNotification(after seconds: TimeInterval) {
+        let content = UNMutableNotificationContent()
+        content.title = "Kapuscsere"
+        content.body = "Jön a csere – váltsatok kapust!"
+        content.sound = .default
+        // Áttöri a Fókusz módokat, hogy meccs közben biztosan megérkezzen.
+        content.interruptionLevel = .timeSensitive
+
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, seconds), repeats: false)
+        let request = UNNotificationRequest(identifier: Self.keeperNotificationID,
+                                            content: content,
+                                            trigger: trigger)
+        UNUserNotificationCenter.current().add(request)
     }
 
     private func fireKeeperAlert() {
@@ -242,15 +275,16 @@ final class MatchModel: ObservableObject {
         rescheduleKeeperAlert()
     }
 
-    /// Kb. 2 másodpercnyi folyamatos rezgés: a watchOS csak rövid mintákat játszik le,
-    /// ezért sűrűn ismételjük őket.
+    /// Kb. 2 másodpercnyi rezgés: a watchOS csak rövid mintákat játszik le, ezért sűrűn
+    /// ismételjük őket. Két mintát váltogatunk, mert az azonos, gyors ismétléseket a
+    /// rendszer összevonhatja.
     private func playKeeperHaptic() {
         let device = WKInterfaceDevice.current()
-        let pulseCount = 6
-        let spacing = 0.33
+        let pulseCount = 7
+        let spacing = 0.3
         for index in 0..<pulseCount {
             DispatchQueue.main.asyncAfter(deadline: .now() + spacing * Double(index)) {
-                device.play(.notification)
+                device.play(index.isMultiple(of: 2) ? .notification : .failure)
             }
         }
     }
@@ -279,5 +313,21 @@ final class MatchModel: ObservableObject {
         ) { [weak self] _ in
             self?.reloadFromStore()
         }
+    }
+}
+
+/// Ha a képernyő aktív, a saját rezgés és a KAPUSCSERE felirat már jelzett, ezért nem
+/// dobjuk rá az értesítést is. Háttérben viszont épp az értesítés az egyetlen csatorna,
+/// amin csuklóleengedve is elérjük a felhasználót.
+final class KeeperNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    static let shared = KeeperNotificationDelegate()
+
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        let isActive = WKApplication.shared().applicationState == .active
+        completionHandler(isActive ? [] : [.banner, .sound])
     }
 }

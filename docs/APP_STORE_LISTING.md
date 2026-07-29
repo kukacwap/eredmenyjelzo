@@ -77,7 +77,7 @@ IDŐ
 • Félidő egy koppintással: megáll az óra és az edzés is.
 • A 2. félidő a fociban szokásos módon a félidő idejétől számol tovább.
 • Az óra bármikor megállítható és folytatható (sérülés, hosszú beadás).
-• Állítható félidőhossz: 20, 25, 30, 35 vagy 45 perc.
+• Állítható félidőhossz: 10-től 60 percig, 5 perces lépésekben.
 
 KAPUSCSERE
 • Állítsd be, milyen közönként cserélődik a kapus (30 másodperces
@@ -131,7 +131,7 @@ TIME
 • Halftime with one tap: both the clock and the workout pause.
 • The second half continues from the half length, as in real football.
 • Pause and resume the clock any time (injuries, long stoppages).
-• Configurable half length: 20, 25, 30, 35, or 45 minutes.
+• Configurable half length: 10 to 60 minutes, in 5-minute steps.
 
 GOALKEEPER ROTATION
 • Set how often the keeper changes (in 30-second steps, typically 7:00

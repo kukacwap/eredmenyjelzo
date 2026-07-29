@@ -100,6 +100,9 @@ enum MatchSettings {
 
     /// A választható kapuscsere-közök: 3:00-tól 15:00-ig, 30 másodperces lépésekben.
     static let keeperIntervalOptions: [Int] = [0] + stride(from: 180, through: 900, by: 30).map { $0 }
+
+    /// A választható félidőhosszak percben: 10-től 60-ig, 5 perces lépésekben.
+    static let halfLengthOptions: [Int] = stride(from: 10, through: 60, by: 5).map { $0 }
 }
 
 extension MatchSnapshot {

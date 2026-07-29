@@ -151,6 +151,9 @@ tekerésével lehet adni (fel = zöld csapat, le = fehér csapat). A jobb
 oldali menü gombbal érhető el az eredmény szerkesztése, a futó óra
 kapcsolása és a meccs befejezése.
 
+A kapuscsere-figyelmeztetés helyi értesítést használ (nincs szerver,
+nincs push), ezért induláskor értesítési engedélyt kér.
+
 Az app nem gyűjt adatot, nincs fiók, nincs hálózati kommunikáció.
 ```
 
