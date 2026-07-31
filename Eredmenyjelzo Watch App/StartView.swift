@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 struct StartView: View {
     @EnvironmentObject private var match: MatchModel
@@ -76,6 +77,8 @@ struct StartView: View {
 struct MatchSettingsView: View {
     @EnvironmentObject private var match: MatchModel
 
+    @State private var notificationsDenied = false
+
     var body: some View {
         List {
             Picker(selection: Binding(get: { match.halfLengthMinutes },
@@ -109,6 +112,13 @@ struct MatchSettingsView: View {
                 .font(.caption2)
                 .foregroundStyle(.secondary)
 
+            if notificationsDenied && match.keeperIntervalSeconds > 0 {
+                Label("Az értesítések le vannak tiltva, ezért csuklóleengedve nem fogod érezni a jelzést. Kapcsold be: Óra → Beállítások → Értesítések → Eredményjelző.",
+                      systemImage: "exclamationmark.triangle.fill")
+                    .font(.caption2)
+                    .foregroundStyle(.red)
+            }
+
             Text("Ha játék közben nem érzed: Beállítások → Hangok és haptika → Haptika erőssége feljebb, és a Kiemelt haptika bekapcsolva.")
                 .font(.caption2)
                 .foregroundStyle(.orange)
@@ -118,5 +128,9 @@ struct MatchSettingsView: View {
                 .foregroundStyle(.secondary)
         }
         .navigationTitle("Beállítások")
+        .task {
+            let settings = await UNUserNotificationCenter.current().notificationSettings()
+            notificationsDenied = settings.authorizationStatus == .denied
+        }
     }
 }

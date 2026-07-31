@@ -61,8 +61,9 @@ struct ScoreboardView: View {
         .onChange(of: crownValue) { oldValue, newValue in
             handleCrown(delta: newValue - oldValue)
         }
-        .onChange(of: match.greenScore) { _, _ in flash(.green) }
-        .onChange(of: match.whiteScore) { _, _ in flash(.white) }
+        // Csak gólnál villanjon, gól visszavonásakor ne.
+        .onChange(of: match.greenScore) { old, new in if new > old { flash(.green) } }
+        .onChange(of: match.whiteScore) { old, new in if new > old { flash(.white) } }
         .onChange(of: scenePhase) { _, newPhase in
             // Az Action Button intent külön írja az állást – aktiváláskor beolvassuk.
             if newPhase == .active {
@@ -113,7 +114,7 @@ struct ScoreboardView: View {
         // A sormagasság ~1,2× a pontméretnek, ezért kicsit kisebb pontméret tölti ki
         // a sávot függőleges levágás nélkül.
         return Text("\(match.score(for: team))")
-            .font(.system(size: rowHeight * 0.82, weight: .heavy, design: .rounded).monospacedDigit())
+            .font(.system(size: max(14, rowHeight * 0.82), weight: .heavy, design: .rounded).monospacedDigit())
             .foregroundStyle(color.opacity(isLuminanceReduced ? 0.7 : 1))
             .minimumScaleFactor(0.3)
             .lineLimit(1)

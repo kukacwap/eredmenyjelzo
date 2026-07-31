@@ -165,6 +165,8 @@ final class MatchModel: ObservableObject {
     // MARK: - Gólok
 
     func goal(for team: Team) {
+        // Előbb beolvassuk az esetleges Action Button-gólt, hogy ne írjuk felül.
+        reloadFromStore()
         let time = state.matchTime(at: Date())
         switch team {
         case .green: state.greenScore += 1
@@ -176,6 +178,7 @@ final class MatchModel: ObservableObject {
     }
 
     func removeGoal(from team: Team) {
+        reloadFromStore()
         switch team {
         case .green:
             guard state.greenScore > 0 else { return }
@@ -229,7 +232,7 @@ final class MatchModel: ObservableObject {
         keeperTimer?.invalidate()
         keeperTimer = nil
         UNUserNotificationCenter.current()
-            .removePendingNotificationRequests(withIdentifiers: [Self.keeperNotificationID])
+            .removePendingNotificationRequests(withIdentifiers: Self.keeperNotificationIDs)
 
         let interval = TimeInterval(MatchSettings.keeperIntervalSeconds)
         guard interval > 0, state.phase.isPlaying, state.isClockRunning else { return }
@@ -245,28 +248,41 @@ final class MatchModel: ObservableObject {
         RunLoop.main.add(timer, forMode: .common)
         keeperTimer = timer
 
-        scheduleKeeperNotification(after: remaining)
+        scheduleKeeperNotifications(firstAfter: remaining, interval: interval)
     }
 
     deinit {
         keeperTimer?.invalidate()
     }
 
-    private static let keeperNotificationID = "keeper.change"
+    private static let keeperNotificationPrefix = "keeper.change."
+    /// Ennyi cserét ütemezünk előre. Ha a rendszer felfüggeszti az appot, a timer megáll,
+    /// és csak ezek az előre beütemezett értesítések maradnak – ezért kell több belőlük.
+    private static let keeperLookahead = 8
 
-    private func scheduleKeeperNotification(after seconds: TimeInterval) {
-        let content = UNMutableNotificationContent()
-        content.title = "Kapuscsere"
-        content.body = "Jön a csere – váltsatok kapust!"
-        content.sound = .default
-        // Áttöri a Fókusz módokat, hogy meccs közben biztosan megérkezzen.
-        content.interruptionLevel = .timeSensitive
+    private static var keeperNotificationIDs: [String] {
+        (0..<keeperLookahead).map { "\(keeperNotificationPrefix)\($0)" }
+    }
 
-        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, seconds), repeats: false)
-        let request = UNNotificationRequest(identifier: Self.keeperNotificationID,
-                                            content: content,
-                                            trigger: trigger)
-        UNUserNotificationCenter.current().add(request)
+    private func scheduleKeeperNotifications(firstAfter seconds: TimeInterval,
+                                             interval: TimeInterval) {
+        let center = UNUserNotificationCenter.current()
+        for index in 0..<Self.keeperLookahead {
+            let content = UNMutableNotificationContent()
+            content.title = "Kapuscsere"
+            content.body = "Jön a csere – váltsatok kapust!"
+            content.sound = .default
+            // Áttöri a Fókusz módokat, hogy meccs közben biztosan megérkezzen.
+            content.interruptionLevel = .timeSensitive
+
+            let delay = seconds + interval * Double(index)
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, delay),
+                                                            repeats: false)
+            let request = UNNotificationRequest(identifier: "\(Self.keeperNotificationPrefix)\(index)",
+                                                content: content,
+                                                trigger: trigger)
+            center.add(request)
+        }
     }
 
     private func fireKeeperAlert() {

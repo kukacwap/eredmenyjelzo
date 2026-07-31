@@ -11,6 +11,8 @@ final class WorkoutManager: NSObject, ObservableObject {
     private let healthStore = HKHealthStore()
     private var session: HKWorkoutSession?
     private var builder: HKLiveWorkoutBuilder?
+    /// Az indítás aszinkron (edzés-visszaállítás), ezért védeni kell a dupla indítástól.
+    private var isStartingWorkout = false
 
     private let heartRateUnit = HKUnit.count().unitDivided(by: .minute())
 
@@ -33,7 +35,38 @@ final class WorkoutManager: NSObject, ObservableObject {
     }
 
     func startWorkout() {
-        guard HKHealthStore.isHealthDataAvailable(), session == nil else { return }
+        guard HKHealthStore.isHealthDataAvailable(), session == nil, !isStartingWorkout else { return }
+        isStartingWorkout = true
+
+        // Ha a rendszer kilőtte az appot meccs közben, az edzés a háttérben életben
+        // maradhatott. Ilyenkor azt vesszük át, különben két párhuzamos edzés indulna.
+        healthStore.recoverActiveWorkoutSession { [weak self] recovered, _ in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                self.isStartingWorkout = false
+                if let recovered {
+                    self.adopt(recovered)
+                } else {
+                    self.beginNewWorkout()
+                }
+            }
+        }
+    }
+
+    /// Átveszi a rendszerben maradt edzést: nem indítunk újat, csak rákötjük a delegate-eket.
+    private func adopt(_ recovered: HKWorkoutSession) {
+        let builder = recovered.associatedWorkoutBuilder()
+        builder.dataSource = HKLiveWorkoutDataSource(healthStore: healthStore,
+                                                     workoutConfiguration: recovered.workoutConfiguration)
+        recovered.delegate = self
+        builder.delegate = self
+        session = recovered
+        self.builder = builder
+        isWorkoutActive = (recovered.state == .running)
+    }
+
+    private func beginNewWorkout() {
+        guard session == nil else { return }
 
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = .soccer

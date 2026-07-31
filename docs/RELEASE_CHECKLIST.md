@@ -23,6 +23,13 @@ Store-ba. Pipáld ki sorban.
       > vagy a review elbukik. Az appban a `com.apple.developer.healthkit`
       > entitlement már be van állítva
       > (`Eredmenyjelzo Watch App/Eredmenyjelzo Watch App.entitlements`).
+- [ ] Kapcsold be a **Time Sensitive Notifications** capability-t is.
+      > A kapuscsere-figyelmeztetés `.timeSensitive` szintű helyi értesítést
+      > küld, hogy a Fókusz módokat is áttörje. Az entitlement
+      > (`com.apple.developer.usernotifications.time-sensitive`) már be van
+      > állítva, de az App ID-n is engedélyezni kell, különben a signing hibát
+      > dob. (Ez nem a Critical Alerts – ahhoz külön Apple-engedély kell,
+      > ehhez nem.)
 - [ ] (Automatic signing esetén az Xcode ezt sok esetben magától létrehozza.)
 
 ---
@@ -33,8 +40,8 @@ Store-ba. Pipáld ki sorban.
 - [ ] Target **Eredmenyjelzo Watch App** → **Signing & Capabilities**:
   - [ ] „Automatically manage signing" bepipálva.
   - [ ] **Team**: a saját fejlesztői csapatod kiválasztva.
-  - [ ] A **HealthKit** capability szerepel a listában (ha nem, a „+ Capability"
-        gombbal add hozzá).
+  - [ ] A **HealthKit** és a **Time Sensitive Notifications** capability
+        szerepel a listában (ha nem, a „+ Capability" gombbal add hozzá).
 - [ ] Ellenőrizd a verziót: **Version (MARKETING_VERSION)** = `1.0`,
       **Build (CURRENT_PROJECT_VERSION)** = `1`. Minden új feltöltésnél a
       Build számot növelni kell.

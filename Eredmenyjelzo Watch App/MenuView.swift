@@ -65,14 +65,16 @@ struct MenuView: View {
                     Label("Kapuscsere", systemImage: "hand.raised.fill")
                 }
 
-                if let remaining = match.timeUntilKeeperChange(at: Date()) {
-                    HStack {
-                        Label("Következő csere", systemImage: "timer")
-                        Spacer()
-                        Text(MatchStore.formatClock(remaining))
-                            .monospacedDigit()
+                if match.timeUntilKeeperChange(at: Date()) != nil {
+                    TimelineView(.periodic(from: .now, by: 1)) { context in
+                        HStack {
+                            Label("Következő csere", systemImage: "timer")
+                            Spacer()
+                            Text(MatchStore.formatClock(match.timeUntilKeeperChange(at: context.date) ?? 0))
+                                .monospacedDigit()
+                        }
+                        .foregroundStyle(.orange)
                     }
-                    .foregroundStyle(.orange)
                 }
 
                 if workoutManager.heartRate > 0 {
