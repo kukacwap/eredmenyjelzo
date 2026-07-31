@@ -12,7 +12,7 @@ található, hogy hozzáadhasd az **English (U.S.)** lokalizációt.
 |------|-------|
 | **Név (App Name)** | Eredményjelző |
 | **Alcím (Subtitle, max 30 kar.)** | Kispályás foci eredményjelző |
-| **Bundle ID** | `com.kukacwap.eredmenyjelzo.watchkitapp` |
+| **Bundle ID** | `com.kukacwap.eredmenyjelzo` |
 | **SKU** | `eredmenyjelzo-watch-001` |
 | **Elsődleges kategória** | Sport (Sports) |
 | **Másodlagos kategória** | Egészség és fitnesz (Health & Fitness) |

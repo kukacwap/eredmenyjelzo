@@ -272,13 +272,12 @@
 				INFOPLIST_FILE = "Eredmenyjelzo Watch App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Eredményjelző";
 				INFOPLIST_KEY_WKApplication = YES;
-				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kukacwap.eredmenyjelzo.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kukacwap.eredmenyjelzo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
@@ -299,13 +298,12 @@
 				INFOPLIST_FILE = "Eredmenyjelzo Watch App/Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Eredményjelző";
 				INFOPLIST_KEY_WKApplication = YES;
-				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kukacwap.eredmenyjelzo.watchkitapp;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kukacwap.eredmenyjelzo;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;

@@ -17,7 +17,7 @@ Store-ba. Pipáld ki sorban.
 ## 1. App ID és képességek (developer.apple.com)
 
 - [ ] **Certificates, Identifiers & Profiles** → Identifiers → új App ID:
-      `com.kukacwap.eredmenyjelzo.watchkitapp` (Explicit).
+      `com.kukacwap.eredmenyjelzo` (Explicit).
 - [ ] Ennél az App ID-nál kapcsold be a **HealthKit** capability-t.
       > Ez kritikus: ha az App ID-n nincs bekapcsolva a HealthKit, a feltöltés
       > vagy a review elbukik. Az appban a `com.apple.developer.healthkit`
