@@ -141,27 +141,86 @@ Javasolt képek (2–4 db): 1) a fő eredményjelző kép egy állással (pl. 6:
 
 ## 7. App Review – megjegyzések a bírálónak (fontos!)
 
-Az App Store Connect **App Review Information → Notes** mezőjébe ajánlott
-beírni (HealthKit miatt a bírálók ezt figyelik):
+Az App Store Connect **App Review Information → Notes** mezőjébe **kötelező**
+beírni – üresen hagyva a beküldés Guideline 2.1 („Information Needed") miatt
+elbukik. Az alábbi szöveg mind a 7 szokásos kérdést lefedi. Mellé **csatolni
+kell egy képernyőfelvételt** is fizikai eszközről (Attachment mező).
 
 ```
-Ez egy önálló (watch-only) watchOS app kispályás foci eredményjelzésére.
+Eredmenyjelzo is a standalone watchOS app (no companion iOS app) that works as
+a scoreboard for small-sided amateur football (5-a-side / 6-a-side) matches.
+It requires no account, no login, and no network connection.
 
-HealthKit: a "Meccs indítása" gomb egy labdarúgás (Soccer) típusú edzést
-indít, hogy a meccs alatt pulzus- és kalóriamérés fusson, és a meccs
-edzésként mentődjön az Egészség appba. Az egészségügyi adat az eszközön
-marad, nem hagyja el az órát, nem osztjuk meg, nem használjuk reklámra.
+1. SCREEN RECORDING
+A screen recording captured on a physical Apple Watch Ultra (watchOS 26.3) is
+attached. It shows: launching the app, the HealthKit and notification
+permission prompts, starting a match (which starts a Soccer workout), scoring
+goals with the Digital Crown and the on-screen + button, the menu (edit score,
+pause clock, halftime, settings), ending the match, and the end-of-match
+summary.
 
-Teszteléshez: nyisd meg az appot, koppints a "Meccs indítása" gombra, és
-engedélyezd a HealthKit hozzáférést. Gólt a Digital Crown fel/le
-tekerésével lehet adni (fel = zöld csapat, le = fehér csapat). A jobb
-oldali menü gombbal érhető el az eredmény szerkesztése, a futó óra
-kapcsolása és a meccs befejezése.
+2. DEVICES AND OPERATING SYSTEMS TESTED
+- Apple Watch Ultra - watchOS 26.3 (physical device, paired with iPhone 13 Pro)
+- Apple Watch simulators (49 mm / 46 mm / 45 mm / 41 mm) - watchOS 26, used to
+  verify the layout on every screen size
 
-A kapuscsere-figyelmeztetés helyi értesítést használ (nincs szerver,
-nincs push), ezért induláskor értesítési engedélyt kér.
+3. PURPOSE AND TARGET AUDIENCE
+Problem: amateur football players cannot easily keep score while playing.
+Phones are in a bag and nobody wants to stop the game to update a score.
+Solution: the app keeps the score on the player's wrist, readable at a glance,
+with one-handed input that works while playing.
+Target audience: recreational players of 5-a-side and 6-a-side football, and
+anyone refereeing or organising such matches.
+Value: score, match clock and goalkeeper rotation are handled on the wrist,
+while the match is simultaneously recorded as a Soccer workout in the Health
+app.
 
-Az app nem gyűjt adatot, nincs fiók, nincs hálózati kommunikáció.
+4. HOW TO SET UP AND USE THE APP
+No login, no account, no demo credentials and no sample files are required.
+- Launch the app. On first launch it asks for HealthKit permission (to record
+  the match as a Soccer workout and show heart rate) and notification
+  permission (for the optional goalkeeper-rotation alert). Both are optional -
+  the scoreboard works if either is denied.
+- Tap "Meccs inditasa" (Start match) to begin.
+- To score: turn the Digital Crown UP for the green team (top number) or DOWN
+  for the white team (bottom number). Several clicks are required so that
+  accidental turns do not count.
+- The "+" button on the left edge adds a goal for the opposing team. On
+  Apple Watch Series 9 / Ultra 2 and later, Double Tap triggers the same
+  action.
+- The "..." button on the right edge opens the menu: edit score (+/-),
+  pause/resume the clock, start halftime, toggle the running clock, choose
+  your own team, set the goalkeeper rotation interval, and end the match.
+- Ending the match shows a summary: final score, played time, average and
+  maximum heart rate, calories, and the timeline of goals.
+- On Apple Watch Ultra the Action Button can optionally be assigned to the
+  "Gol" (Goal) shortcut in watch Settings; it adds a goal for the user's own
+  team.
+The user interface is in Hungarian only.
+
+5. EXTERNAL SERVICES, TOOLS OR PLATFORMS
+None. The app uses only Apple frameworks: SwiftUI, HealthKit (Soccer workout,
+heart rate, active energy), UserNotifications (local notifications only, no
+push server), App Intents (Action Button / Shortcuts) and UserDefaults for
+local storage. There are no third-party SDKs, no analytics, no advertising,
+no authentication service, no payment processing and no AI services. The app
+makes no network requests of any kind and collects no data.
+
+6. REGIONAL DIFFERENCES
+None. The app behaves identically in every region. The user interface is
+Hungarian-only in all regions. There is no region-specific content, pricing
+or feature gating.
+
+7. REGULATED INDUSTRY / PROTECTED THIRD-PARTY MATERIAL
+The app does not operate in a regulated industry and contains no protected
+third-party material. It reads heart rate, active energy and distance from
+HealthKit solely to display them to the user during their own workout, and
+writes a Soccer workout to the Health app. All health data stays on the
+device: it is never transmitted, shared with anyone, or used for advertising.
+The app is not a medical device and makes no health or medical claims. All
+artwork and text in the app are original.
+
+Privacy policy: https://kukacwap.github.io/eredmenyjelzo/
 ```
 
 Gyakori HealthKit-es elbukási okok, amiket az app már kezel:
