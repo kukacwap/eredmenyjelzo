@@ -17,6 +17,9 @@ final class WorkoutManager: NSObject, ObservableObject {
 
     private let heartRateUnit = HKUnit.count().unitDivided(by: .minute())
 
+    /// Minden új pulzusértéknél meghívjuk – a meccsmodell ebből építi az idővonalat.
+    var heartRateHandler: ((Double) -> Void)?
+
     func requestAuthorization() {
         guard HKHealthStore.isHealthDataAvailable() else { return }
 
@@ -160,6 +163,7 @@ extension WorkoutManager: HKLiveWorkoutBuilderDelegate {
                     self.heartRate = current
                     self.averageHeartRate = average
                     self.maxHeartRate = maximum
+                    self.heartRateHandler?(current)
                 }
             } else if quantityType == HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) {
                 let kilocalories = statistics.sumQuantity()?.doubleValue(for: .kilocalorie()) ?? 0

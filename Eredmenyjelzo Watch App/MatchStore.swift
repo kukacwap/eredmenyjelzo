@@ -66,6 +66,113 @@ struct MatchSnapshot: Codable {
     var savedAt = Date()
 }
 
+/// Egy pulzusminta a meccs idővonalán. A meccsidőhöz kötjük, hogy a gólokkal egy
+/// tengelyen legyen ábrázolható.
+struct HeartRateSample: Codable, Equatable {
+    var matchTime: TimeInterval
+    var bpm: Double
+}
+
+/// Egy lejátszott meccs, ahogy a meccstörténetben megőrizzük.
+struct MatchRecord: Codable, Identifiable, Equatable {
+    var id = UUID()
+    var date = Date()
+    var greenScore = 0
+    var whiteScore = 0
+    var playedTime: TimeInterval = 0
+    var goals: [GoalEvent] = []
+    var heartRateSamples: [HeartRateSample] = []
+    var averageHeartRate: Double = 0
+    var maxHeartRate: Double = 0
+    var activeEnergy: Double = 0
+    /// Melyik csapat volt a sajátod – ebből számoljuk a mérleget.
+    var myTeam: Team = .green
+}
+
+extension MatchRecord {
+    enum Outcome {
+        case win, draw, loss
+
+        var label: String {
+            switch self {
+            case .win: return "Gy"
+            case .draw: return "D"
+            case .loss: return "V"
+            }
+        }
+    }
+
+    var myScore: Int { myTeam == .green ? greenScore : whiteScore }
+    var opponentScore: Int { myTeam == .green ? whiteScore : greenScore }
+
+    var outcome: Outcome {
+        if myScore > opponentScore { return .win }
+        if myScore < opponentScore { return .loss }
+        return .draw
+    }
+
+    /// A grafikon vízszintes tengelyének hossza: a legkésőbbi esemény ideje.
+    var timelineEnd: TimeInterval {
+        max(heartRateSamples.last?.matchTime ?? 0,
+            goals.map(\.matchTime).max() ?? 0,
+            60)
+    }
+
+    /// A gól pillanatához legközelebbi mért pulzus.
+    func heartRate(at time: TimeInterval) -> Double? {
+        guard !heartRateSamples.isEmpty else { return nil }
+        return heartRateSamples.min(by: {
+            abs($0.matchTime - time) < abs($1.matchTime - time)
+        })?.bpm
+    }
+}
+
+/// A lejátszott meccsek listája. Külön tárolva a futó meccstől.
+enum MatchHistory {
+    private static let key = "match.history.v1"
+    /// Ennyi meccset őrzünk meg, hogy a tároló ne hízzon korlátlanul.
+    static let maxRecords = 50
+
+    static func load() -> [MatchRecord] {
+        guard let data = UserDefaults.standard.data(forKey: key),
+              let records = try? JSONDecoder().decode([MatchRecord].self, from: data)
+        else { return [] }
+        return records
+    }
+
+    static func save(_ records: [MatchRecord]) {
+        let trimmed = Array(records.prefix(maxRecords))
+        if let data = try? JSONEncoder().encode(trimmed) {
+            UserDefaults.standard.set(data, forKey: key)
+        }
+    }
+}
+
+/// A meccstörténet összesítése a saját csapat szemszögéből.
+struct HistorySummary {
+    var matches = 0
+    var wins = 0
+    var draws = 0
+    var losses = 0
+    var goalsFor = 0
+    var goalsAgainst = 0
+
+    init(records: [MatchRecord]) {
+        matches = records.count
+        for record in records {
+            switch record.outcome {
+            case .win: wins += 1
+            case .draw: draws += 1
+            case .loss: losses += 1
+            }
+            goalsFor += record.myScore
+            goalsAgainst += record.opponentScore
+        }
+    }
+
+    var goalDifference: Int { goalsFor - goalsAgainst }
+}
+
 /// Meccsektől független beállítások. Túlélik az újraindítást, és nem érintik a mentett meccset.
 enum MatchSettings {
     private static let halfLengthKey = "settings.halfLengthMinutes"

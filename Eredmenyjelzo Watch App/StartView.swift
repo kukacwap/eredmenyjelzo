@@ -27,6 +27,17 @@ struct StartView: View {
                 .tint(.green)
                 .buttonStyle(.borderedProminent)
 
+                if !match.history.isEmpty {
+                    NavigationLink {
+                        HistoryView()
+                    } label: {
+                        Label("Meccsek (\(match.history.count))", systemImage: "list.bullet")
+                            .font(.caption2)
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                }
+
                 NavigationLink {
                     MatchSettingsView()
                 } label: {

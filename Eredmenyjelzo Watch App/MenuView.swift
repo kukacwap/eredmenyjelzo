@@ -99,7 +99,9 @@ struct MenuView: View {
                                 titleVisibility: .visible) {
                 Button("Meccs vége", role: .destructive) {
                     workoutManager.endWorkout()
-                    match.endMatch()
+                    match.endMatch(averageHeartRate: workoutManager.averageHeartRate,
+                                   maxHeartRate: workoutManager.maxHeartRate,
+                                   activeEnergy: workoutManager.activeEnergy)
                     dismiss()
                 }
                 Button("Mégse", role: .cancel) {}

@@ -12,11 +12,25 @@ final class MatchModel: ObservableObject {
     @Published private(set) var keeperAlertPulse = 0
     private var keeperTimer: Timer?
 
+    /// A lejátszott meccsek, legfrissebb elöl.
+    @Published private(set) var history: [MatchRecord] = []
+    /// Az imént befejezett meccs – ezt mutatja a záróképernyő.
+    @Published private(set) var lastRecord: MatchRecord?
+
+    /// A futó meccs pulzusmintái. Csak memóriában élnek: ha a rendszer kilövi az
+    /// appot, az állás megmarad, a görbe nem – ez elfogadható csere a mentés
+    /// visszafelé kompatibilitásáért.
+    private var heartRateSamples: [HeartRateSample] = []
+    private var lastHeartRateSampleTime: TimeInterval = -.greatestFiniteMagnitude
+    /// Ennyi meccsidőnként rögzítünk egy pulzusmintát.
+    private let heartRateSampleInterval: TimeInterval = 15
+
     init() {
         // Induláskor nem folytatunk automatikusan: a StartView kérdezi meg.
         state = MatchSnapshot()
         // A meglévő mentést nem tekintjük „újnak", hogy ne töltse vissza magától.
         lastPersistedAt = MatchStore.load()?.savedAt ?? .distantPast
+        history = MatchHistory.load()
         observeExternalChanges()
     }
 
@@ -69,6 +83,8 @@ final class MatchModel: ObservableObject {
     // MARK: - Meccs életciklus
 
     func startMatch() {
+        clearHeartRateSamples()
+        lastRecord = nil
         state = MatchSnapshot(phase: .firstHalf,
                               halfLength: TimeInterval(MatchSettings.halfLengthMinutes * 60),
                               segmentStart: Date())
@@ -78,6 +94,8 @@ final class MatchModel: ObservableObject {
     /// Visszatölti a mentett, félbehagyott meccset.
     func resumeSavedMatch() {
         guard let snapshot = MatchStore.resumable() else { return }
+        clearHeartRateSamples()
+        lastRecord = nil
         state = snapshot
         persist()
     }
@@ -118,13 +136,65 @@ final class MatchModel: ObservableObject {
         WKInterfaceDevice.current().play(.start)
     }
 
-    func endMatch() {
+    /// Lezárja a meccset, és elmenti a történetbe. Az edzés statisztikáit a hívó adja át,
+    /// mert azok a WorkoutManagernél élnek.
+    func endMatch(averageHeartRate: Double = 0,
+                  maxHeartRate: Double = 0,
+                  activeEnergy: Double = 0) {
+        guard state.phase.isActive else { return }
+
         let displayed = state.matchTime(at: Date())
         bankSegment()
         state.finalMatchTime = displayed
         state.phase = .finished
+
+        let record = MatchRecord(date: Date(),
+                                 greenScore: state.greenScore,
+                                 whiteScore: state.whiteScore,
+                                 playedTime: state.totalPlayedTime,
+                                 goals: state.goals,
+                                 heartRateSamples: heartRateSamples,
+                                 averageHeartRate: averageHeartRate,
+                                 maxHeartRate: maxHeartRate,
+                                 activeEnergy: activeEnergy,
+                                 myTeam: MatchSettings.myTeam)
+        lastRecord = record
+        history.insert(record, at: 0)
+        MatchHistory.save(history)
+
         persist()
         WKInterfaceDevice.current().play(.success)
+    }
+
+    // MARK: - Meccstörténet
+
+    var historySummary: HistorySummary { HistorySummary(records: history) }
+
+    func deleteHistory(at offsets: IndexSet) {
+        history.remove(atOffsets: offsets)
+        MatchHistory.save(history)
+    }
+
+    func clearHistory() {
+        history = []
+        MatchHistory.save(history)
+    }
+
+    // MARK: - Pulzus
+
+    /// A WorkoutManager hívja minden új pulzusértéknél. Csak futó óra mellett mintázunk,
+    /// így a görbe és a gólok ugyanazon a meccsidő-tengelyen vannak.
+    func recordHeartRate(_ bpm: Double) {
+        guard bpm > 0, state.phase.isPlaying, state.isClockRunning else { return }
+        let time = state.matchTime(at: Date())
+        guard time - lastHeartRateSampleTime >= heartRateSampleInterval else { return }
+        lastHeartRateSampleTime = time
+        heartRateSamples.append(HeartRateSample(matchTime: time, bpm: bpm))
+    }
+
+    private func clearHeartRateSamples() {
+        heartRateSamples = []
+        lastHeartRateSampleTime = -.greatestFiniteMagnitude
     }
 
     /// A záróképernyő után vissza az indító képernyőre. A beállítások külön tárolódnak.
@@ -132,6 +202,8 @@ final class MatchModel: ObservableObject {
         MatchStore.clear()
         state = MatchSnapshot()
         lastPersistedAt = Date()
+        clearHeartRateSamples()
+        lastRecord = nil
         rescheduleKeeperAlert()
     }
 

@@ -11,7 +11,9 @@ Kispályás (5+5 / 6+6) amatőr foci eredményjelző Apple Watch alkalmazás 90 
 - **Always-On kijelző** – lefordított csuklóval is látszik az állás: halványított számok, és a rendszer percenkénti frissítéséhez igazodva perc-alapú óra (`23′`), hogy ne álljon meg egy elavult másodpercértéken.
 - **Action Button (Ultra) és Double Tap** – gólt fizikai gombbal, illetve gesztussal is lehet adni, ami játék közben sokkal könnyebb, mint koronát tekerni. Az **Action Button a saját csapatodnak**, a **Double Tap az ellenfélnek** ad gólt, így a kettő együtt lefedi mindkét csapatot. Lásd lentebb a beállítást.
 - **Kapuscsere-figyelmeztetés** – beállítható közönként (30 másodperces lépésekben, 3:00-tól 15:00-ig, tipikusan **7:00** vagy **7:30**) kb. **2 másodpercnyi rezgés** jelzi, hogy jön a csere, és a képernyőn felvillan a *KAPUSCSERE* felirat. A jelzés **két csatornán** megy: aktív képernyőnél a saját haptikus mintasorozat, csuklóleengedve pedig egy **időérzékeny helyi értesítés**, mert a `WKInterfaceDevice.play` háttérben nem megbízható. A ciklus a **tiszta játékidőt** követi: félidőben és megállított óránál nem számol tovább. A menüben látszik a következő cseréig hátralévő idő. Alapból kikapcsolva.
-- **Meccs végi összegzés** – végeredmény, tisztán játékkal töltött idő, átlag- és maximális pulzus, kalória, valamint a **gólok időrendje** percre.
+- **Meccs végi összegzés** – végeredmény, tisztán játékkal töltött idő, átlag- és maximális pulzus, kalória, valamint a **gólok időrendje** percre, mellette azzal a pulzussal, ami a gól pillanatában mért.
+- **Pulzus- és gól-idővonal** – a záróképernyőn egy kis grafikon mutatja a meccs alatti pulzusgörbédet, rárajzolva a gólok pillanataival. Nem becslés: mért adat. HealthKit-engedély nélkül a gólok idővonala jelenik meg helyette.
+- **Meccstörténet** – a befejezett meccsek elmentődnek (dátum, végeredmény, játékidő, gólnapló, pulzusgörbe). Az indító képernyőről elérhető lista mutatja a mérleget is: hány meccs, győzelem/döntetlen/vereség és gólkülönbség a saját csapatod szemszögéből. Egy meccsre koppintva a teljes összegzés visszanézhető, a lista elemei törölhetők.
 - **Automatikus mentés** – az állás minden gólnál mentődik, így ha a rendszer kilövi az appot vagy újraindul az óra, az indító képernyő felajánlja a **félbehagyott meccs folytatását**.
 - **Menü gomb** – a képernyő jobb szélén, középen lévő gombbal nyílik a menü: eredmény szerkesztése (+/-, nullázás), óra megállítása/folytatása, félidő, futó óra mutatása, saját csapat, aktuális pulzus, meccs befejezése.
 - **Workout integráció** – a „Meccs indítása" gomb **labdarúgás (soccer)** típusú HealthKit edzést indít, így a meccs alatt megy a pulzusmérés és kalóriaszámlálás, az app a háttérben is aktív marad (`workout-processing` háttérmód), és a meccs edzésként mentődik az Egészség appba. Félidőben és óramegállításnál az edzés is szünetel.
@@ -65,7 +67,9 @@ Ha a tekerés iránya fordítva kényelmes, a `handleCrown` függvényben a zöl
 
 | Fájl | Feladat |
 |------|---------|
-| `MatchStore.swift` | `Team`, `MatchPhase`, `GoalEvent`, `MatchSnapshot` (meccsállapot + időszámítás), `MatchStore` (mentés/visszatöltés), `MatchSettings` (beállítások, a meccstől függetlenül) |
+| `MatchStore.swift` | `Team`, `MatchPhase`, `GoalEvent`, `MatchSnapshot` (meccsállapot + időszámítás), `MatchStore` (mentés/visszatöltés), `MatchSettings` (beállítások), `MatchRecord` + `MatchHistory` + `HistorySummary` (meccstörténet) |
+| `MatchSummaryContent.swift` | A közös összegző nézet és a pulzus/gól grafikon – ezt használja a záróképernyő és a történet is |
+| `HistoryView.swift` | Meccstörténet listája, mérleggel, és egy korábbi meccs részletei |
 | `MatchModel.swift` | A meccs vezérlése: félidők, óra bankolása, gólok, mentés, külső változás visszaolvasása |
 | `WorkoutManager.swift` | HealthKit labdarúgás edzés, pulzus/kalória statisztika, szüneteltetés |
 | `ScoreboardView.swift` | A meccsképernyő: számok, tónusok, korona, always-on, gól-animáció |

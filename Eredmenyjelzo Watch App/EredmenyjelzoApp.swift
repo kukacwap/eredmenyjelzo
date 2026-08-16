@@ -10,6 +10,12 @@ struct EredmenyjelzoApp: App {
             RootView()
                 .environmentObject(match)
                 .environmentObject(workoutManager)
+                .task {
+                    // A pulzusértékek a meccs idővonalára kerülnek.
+                    workoutManager.heartRateHandler = { [weak match] bpm in
+                        match?.recordHeartRate(bpm)
+                    }
+                }
         }
     }
 }
