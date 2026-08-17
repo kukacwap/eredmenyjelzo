@@ -19,7 +19,7 @@ található, hogy hozzáadhasd az **English (U.S.)** lokalizációt.
 | **Korhatár (Age Rating)** | 4+ |
 | **Ár** | Ingyenes (0-ás ársáv) |
 | **Platform** | watchOS (önálló Apple Watch app) |
-| **Verzió** | 1.0 |
+| **Verzió** | 1.1 |
 
 > Az „App Name" és „Subtitle" App Store-ban egyedi kell legyen. Ha az
 > „Eredményjelző" foglalt, javaslat: „Foci Eredményjelző" vagy
@@ -164,7 +164,28 @@ No sign-up, no ads, no data collection.
 
 ---
 
-## Újdonságok (What's New in This Version – 1.0)
+## Újdonságok (What's New in This Version – 1.1)
+
+**HU:**
+```
+Meccstörténet és pulzusgörbe. ⚽️
+• Meccstörténet: a legutóbbi 50 meccs eredménye, győzelem/döntetlen/vereség
+  összesítéssel
+• Pulzus és gól idővonal a meccs végi összegzésben
+• Apróbb javítások és stabilizálás
+```
+
+**EN:**
+```
+Match history and heart rate timeline. ⚽️
+• Match history: results of your last 50 matches with a win/draw/loss summary
+• Heart rate and goal timeline on the end-of-match summary
+• Minor fixes and stability improvements
+```
+
+---
+
+## Újdonságok – 1.0 (archív)
 
 **HU:**
 ```
