@@ -11,6 +11,8 @@ struct AddGoalIntent: AppIntent {
     static var description = IntentDescription("Gólt ad a saját csapatodnak a futó meccsen.")
     static var openAppWhenRun = false
 
+    // A meccsállapot main actorhoz kötött, ezért az intent is ott fut.
+    @MainActor
     func perform() async throws -> some IntentResult {
         guard var snapshot = MatchStore.load(), snapshot.phase.isActive else {
             WKInterfaceDevice.current().play(.failure)
@@ -37,6 +39,8 @@ struct UndoGoalIntent: AppIntent {
     static var description = IntentDescription("Visszavonja a saját csapat utolsó gólját.")
     static var openAppWhenRun = false
 
+    // A meccsállapot main actorhoz kötött, ezért az intent is ott fut.
+    @MainActor
     func perform() async throws -> some IntentResult {
         guard var snapshot = MatchStore.load(), snapshot.phase.isActive else {
             WKInterfaceDevice.current().play(.failure)
