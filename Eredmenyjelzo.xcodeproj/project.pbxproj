@@ -53,6 +53,8 @@
 		D4F970C1301D4C8C004F27C3 /* eredmenyjelzo Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "eredmenyjelzo Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4F970D0301D4C8E004F27C3 /* eredmenyjelzo Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "eredmenyjelzo Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D4F970DA301D4C8E004F27C3 /* eredmenyjelzo Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "eredmenyjelzo Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4F97101301D4C8E004F27C3 /* WatchApp-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WatchApp-Info.plist"; sourceTree = "<group>"; };
+		D4F97102301D4C8E004F27C3 /* WatchApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WatchApp.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -104,6 +106,8 @@
 				D4F970C5301D4C8C004F27C3 /* eredmenyjelzo Watch App */,
 				D4F970D3301D4C8E004F27C3 /* eredmenyjelzo Watch AppTests */,
 				D4F970DD301D4C8E004F27C3 /* eredmenyjelzo Watch AppUITests */,
+				D4F97101301D4C8E004F27C3 /* WatchApp-Info.plist */,
+				D4F97102301D4C8E004F27C3 /* WatchApp.entitlements */,
 				D4F970BC301D4C8C004F27C3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -452,12 +456,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WatchApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = LS6759H8XF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = eredmenyjelzo;
+				INFOPLIST_FILE = "WatchApp-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Eredm\U00e9nyjelz\U0151";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "A pulzus \U00e9s az edz\U00e9sadatok megjelen\U00edt\U00e9s\U00e9hez olvassuk az eg\U00e9szs\U00e9g\U00fcgyi adatokat.";
@@ -487,12 +493,14 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = WatchApp.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = LS6759H8XF;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_CFBundleDisplayName = eredmenyjelzo;
+				INFOPLIST_FILE = "WatchApp-Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "Eredm\U00e9nyjelz\U0151";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "A pulzus \U00e9s az edz\U00e9sadatok megjelen\U00edt\U00e9s\U00e9hez olvassuk az eg\U00e9szs\U00e9g\U00fcgyi adatokat.";
@@ -524,7 +532,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = LS6759H8XF;
-				INFOPLIST_KEY_CFBundleDisplayName = eredmenyjelzo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Eredm\U00e9nyjelz\U0151";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kukacwap.eredmenyjelzo;
@@ -542,7 +550,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = LS6759H8XF;
-				INFOPLIST_KEY_CFBundleDisplayName = eredmenyjelzo;
+				INFOPLIST_KEY_CFBundleDisplayName = "Eredm\U00e9nyjelz\U0151";
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kukacwap.eredmenyjelzo;

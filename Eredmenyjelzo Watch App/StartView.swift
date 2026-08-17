@@ -38,6 +38,12 @@ struct StartView: View {
                     .foregroundStyle(.secondary)
                 }
 
+                if workoutManager.healthKitProblem != nil {
+                    Label("Nincs pulzusmérés", systemImage: "heart.slash")
+                        .font(.caption2)
+                        .foregroundStyle(.orange)
+                }
+
                 NavigationLink {
                     MatchSettingsView()
                 } label: {
@@ -87,11 +93,18 @@ struct StartView: View {
 
 struct MatchSettingsView: View {
     @EnvironmentObject private var match: MatchModel
+    @EnvironmentObject private var workoutManager: WorkoutManager
 
     @State private var notificationsDenied = false
 
     var body: some View {
         List {
+            if let problem = workoutManager.healthKitProblem {
+                Label(problem, systemImage: "heart.slash")
+                    .font(.caption2)
+                    .foregroundStyle(.orange)
+            }
+
             Picker(selection: Binding(get: { match.halfLengthMinutes },
                                       set: { match.halfLengthMinutes = $0 })) {
                 ForEach(MatchSettings.halfLengthOptions, id: \.self) { minutes in

@@ -20,8 +20,15 @@ final class WorkoutManager: NSObject, ObservableObject {
     /// Minden új pulzusértéknél meghívjuk – a meccsmodell ebből építi az idővonalat.
     var heartRateHandler: ((Double) -> Void)?
 
+    /// Ha a HealthKit elutasít, az némán jár: nincs engedélykérés, nincs pulzusgörbe,
+    /// és edzés híján a rendszer háttérbe teszi az appot. Ezért kiírjuk a hibát.
+    @Published var healthKitProblem: String?
+
     func requestAuthorization() {
-        guard HKHealthStore.isHealthDataAvailable() else { return }
+        guard HKHealthStore.isHealthDataAvailable() else {
+            healthKitProblem = "Ez az eszköz nem támogatja az egészségügyi adatokat."
+            return
+        }
 
         let typesToShare: Set = [HKObjectType.workoutType()]
         var typesToRead: Set<HKObjectType> = []
@@ -35,7 +42,11 @@ final class WorkoutManager: NSObject, ObservableObject {
             typesToRead.insert(distance)
         }
 
-        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { _, _ in }
+        healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead) { _, error in
+            DispatchQueue.main.async {
+                self.healthKitProblem = error.map { "Egészség-hozzáférés: \($0.localizedDescription)" }
+            }
+        }
     }
 
     func startWorkout() {
@@ -91,12 +102,19 @@ final class WorkoutManager: NSObject, ObservableObject {
             maxHeartRate = 0
             activeEnergy = 0
 
+            healthKitProblem = nil
             let start = Date()
             session.startActivity(with: start)
-            builder.beginCollection(withStart: start) { _, _ in }
+            builder.beginCollection(withStart: start) { _, error in
+                guard let error else { return }
+                DispatchQueue.main.async {
+                    self.healthKitProblem = "Edzés adatgyűjtés: \(error.localizedDescription)"
+                }
+            }
         } catch {
             self.session = nil
             self.builder = nil
+            healthKitProblem = "Edzés indítása: \(error.localizedDescription)"
         }
     }
 
@@ -144,6 +162,7 @@ extension WorkoutManager: HKWorkoutSessionDelegate {
             self.isWorkoutActive = false
             self.session = nil
             self.builder = nil
+            self.healthKitProblem = "Edzés megszakadt: \(error.localizedDescription)"
         }
     }
 }
