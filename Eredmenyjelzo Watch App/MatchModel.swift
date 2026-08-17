@@ -170,8 +170,11 @@ final class MatchModel: ObservableObject {
 
     var historySummary: HistorySummary { HistorySummary(records: history) }
 
+    /// A `remove(atOffsets:)` a SwiftUI-ból jönne, a modell viszont UI-mentes marad.
     func deleteHistory(at offsets: IndexSet) {
-        history.remove(atOffsets: offsets)
+        history = history.enumerated()
+            .filter { !offsets.contains($0.offset) }
+            .map(\.element)
         MatchHistory.save(history)
     }
 
