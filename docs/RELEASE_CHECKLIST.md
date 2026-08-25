@@ -266,8 +266,8 @@ git pull origin claude/soccer-score-app-wldwq2
 ```
 
 - [ ] `ls "eredmenyjelzo Watch App"` → szerepel benne az **`EredmenyjelzoApp.swift`**
-- [ ] `grep -rln "Hello, world" .` → **nem ír ki semmit** (ha igen, töröld a
-      `ContentView.swift`-et; a szinkronizált mappa miatt magától fordulna)
+- [ ] `grep -rln --include=*.swift "Hello, world" .` → **nem ír ki semmit** (ha igen,
+      töröld a `ContentView.swift`-et; a szinkronizált mappa miatt magától fordulna)
 
 ### B. Xcode ellenőrzés
 
