@@ -251,10 +251,94 @@ Gyakori HealthKit-es elbukási okok, amiket az app már kezel:
 
 ---
 
+## 1.1 kiadás – teljes menetrend
+
+> Az 1.0-s bolti bináriban az Xcode-sablon `ContentView`-ja futott („Hello,
+> world!"), mert a projektcsere során kimaradt az `@main` belépési pont. Az 1.1
+> ezt javítja, ezért ez a kiadás sürgős.
+
+### A. Munkapéldány frissítése
+
+```bash
+cd ~/Documents/eredmenyjelzo-app
+git checkout -- .
+git pull origin claude/soccer-score-app-wldwq2
+```
+
+- [ ] `ls "eredmenyjelzo Watch App"` → szerepel benne az **`EredmenyjelzoApp.swift`**
+- [ ] `grep -rln "Hello, world" .` → **nem ír ki semmit** (ha igen, töröld a
+      `ContentView.swift`-et; a szinkronizált mappa miatt magától fordulna)
+
+### B. Xcode ellenőrzés
+
+- [ ] `eredmenyjelzo Watch App` target → *Signing & Capabilities*: **HealthKit**,
+      **Background Modes → Workout processing**, **Time Sensitive Notifications**
+      megjelenik, piros hiba nélkül
+- [ ] Mindkét targeten (watch app és konténer) **Version 1.1**, **Build 2**
+- [ ] `⌘⇧K` (Clean Build Folder)
+
+### C. Tesztelés valódi órán (szimulátorban nincs pulzus)
+
+- [ ] Töröld le az appot az óráról, majd telepítsd Xcode-ból
+- [ ] Indításkor **megjelenik a Health engedélykérés**
+- [ ] A kezdőképernyő az eredményjelző, **nem „Hello World"**
+- [ ] Meccs közben csuklóleengedésre az app **a képernyőn marad** (halványítva)
+- [ ] Meccs végén kirajzolódik a **pulzusgörbe** a gólok jelöléseivel
+- [ ] A kezdőképernyőn megjelenik a **„Meccsek (n)"** lista
+- [ ] Nincs narancs **„Nincs pulzusmérés"** figyelmeztetés
+
+### D. Archiválás és feltöltés
+
+- [ ] Cél: **Any watchOS Device (arm64)** → *Product* → *Archive*
+- [ ] Feltöltés előtti ellenőrzés:
+
+```bash
+grep -rl "Hello, world" ~/Library/Developer/Xcode/Archives/*/*.xcarchive/Products/ 2>/dev/null
+```
+
+  **Semmit nem szabad kiírnia.** Ha kiír, a sablon benne van a binárisban – ne töltsd fel.
+
+- [ ] *Distribute App* → **App Store Connect** → **Upload**
+- [ ] Export compliance kérdés már nem jön (`ITSAppUsesNonExemptEncryption = false`
+      benne van a `WatchApp-Info.plist`-ben)
+
+### E. TestFlight
+
+- [ ] A build feldolgozása 5–30 perc, utána a *TestFlight* fülön látszik
+- [ ] Telepítsd TestFlightből az órára, és fusd végig újra a **C** pontot
+- [ ] Ha lehet, játssz vele egy fél meccset – a háttérbe kerülés csak valós
+      használatban derül ki
+
+### F. App Store verzió létrehozása
+
+- [ ] App Store Connect → az app → bal oldali sáv → **„+ Version or Platform"** → **1.1**
+- [ ] **What's New**: a `docs/APP_STORE_LISTING.md` „Újdonságok – 1.1" szövege
+- [ ] **Build**: válaszd ki a most feltöltöttet
+- [ ] Képernyőképek, leírás, kulcsszavak, korhatár, adatvédelem: az 1.0-ból
+      automatikusan öröklődnek, nem kell újra kitölteni
+- [ ] **App Review Information** → *Notes*: másold be újra a 7 pontos jegyzetet
+      (7. fejezet) – az 1.0 emiatt kapott 2.1-es elutasítást
+- [ ] **Release**: *Automatically release this version*
+
+### G. Beküldés és gyorsítás
+
+- [ ] **Add for Review** → **Submit**
+- [ ] **Expedited review kérése**: App Store Connect → *Contact Us* → *App Review*
+      → *Request Expedited Review*. Indoklás: élő appban a fő képernyő nem jelenik
+      meg, minden felhasználót érint. Kritikus hibajavításnál Apple ezt általában
+      megadja, és órák alatt átmegy.
+- [ ] *(Opcionális, amíg tart a review)* **Pricing and Availability** →
+      *Remove from Sale*, hogy ne gyűljenek az egycsillagos értékelések. A már
+      letelepített példányokat nem érinti, és az 1.1 megjelenésekor vissza kell
+      kapcsolni.
+
+---
+
 ## Verzió-emelés a jövőben
 
 Új kiadásnál:
 1. Növeld a **Build**-et (és szükség szerint a **Version**-t) az Xcode-ban.
-2. Archive → Upload.
+2. Archive → a fenti `grep`-es ellenőrzés → Upload.
 3. App Store Connectben új verzió, töltsd ki a „What's New"-t, válaszd az új
    buildet, Submit.
+
