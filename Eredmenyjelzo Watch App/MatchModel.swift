@@ -80,6 +80,12 @@ final class MatchModel: ObservableObject {
         set { objectWillChange.send(); MatchSettings.halfLengthMinutes = newValue }
     }
 
+    /// Mozgás-hőtérkép rögzítése GPS-szel.
+    var pitchHeatmapEnabled: Bool {
+        get { MatchSettings.pitchHeatmapEnabled }
+        set { objectWillChange.send(); MatchSettings.pitchHeatmapEnabled = newValue }
+    }
+
     // MARK: - Meccs életciklus
 
     func startMatch() {
@@ -140,7 +146,9 @@ final class MatchModel: ObservableObject {
     /// mert azok a WorkoutManagernél élnek.
     func endMatch(averageHeartRate: Double = 0,
                   maxHeartRate: Double = 0,
-                  activeEnergy: Double = 0) {
+                  activeEnergy: Double = 0,
+                  heatmap: PitchHeatmap? = nil,
+                  heatmapNote: String? = nil) {
         guard state.phase.isActive else { return }
 
         let displayed = state.matchTime(at: Date())
@@ -157,7 +165,9 @@ final class MatchModel: ObservableObject {
                                  averageHeartRate: averageHeartRate,
                                  maxHeartRate: maxHeartRate,
                                  activeEnergy: activeEnergy,
-                                 myTeam: MatchSettings.myTeam)
+                                 myTeam: MatchSettings.myTeam,
+                                 heatmap: heatmap,
+                                 heatmapNote: heatmapNote)
         lastRecord = record
         history.insert(record, at: 0)
         MatchHistory.save(history)

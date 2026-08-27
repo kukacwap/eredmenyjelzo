@@ -8,6 +8,8 @@ final class WorkoutManager: NSObject, ObservableObject {
     @Published var averageHeartRate: Double = 0
     @Published var maxHeartRate: Double = 0
     @Published var activeEnergy: Double = 0
+    /// Az edzés mért távja – ehhez hasonlítjuk a GPS-nyomot a hőtérkép ellenőrzésénél.
+    @Published var distanceMeters: Double = 0
 
     private let healthStore = HKHealthStore()
     private var session: HKWorkoutSession?
@@ -101,6 +103,7 @@ final class WorkoutManager: NSObject, ObservableObject {
             averageHeartRate = 0
             maxHeartRate = 0
             activeEnergy = 0
+            distanceMeters = 0
 
             healthKitProblem = nil
             let start = Date()
@@ -188,6 +191,11 @@ extension WorkoutManager: HKLiveWorkoutBuilderDelegate {
                 let kilocalories = statistics.sumQuantity()?.doubleValue(for: .kilocalorie()) ?? 0
                 DispatchQueue.main.async {
                     self.activeEnergy = kilocalories
+                }
+            } else if quantityType == HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning) {
+                let meters = statistics.sumQuantity()?.doubleValue(for: .meter()) ?? 0
+                DispatchQueue.main.async {
+                    self.distanceMeters = meters
                 }
             }
         }

@@ -73,6 +73,39 @@ struct HeartRateSample: Codable, Equatable {
     var bpm: Double
 }
 
+/// A meccs alatti mozgás hőtérképe: rács, cellánként az ott töltött másodpercekkel.
+///
+/// A rácsot a rögzített pontfelhő főtengelyére illesztjük, ezért a **mozgásterületet**
+/// mutatja, nem a pálya vonalait – azt GPS-ből nem lehet tudni. Ezért tároljuk a
+/// méreteket is: abból látszik, hogy értelmes-e az illesztés.
+///
+/// Nem a nyers pontokat őrizzük meg, hanem csak ezt a 160 számot, így egy meccs
+/// néhány száz bájt marad a `MatchHistory`-ban.
+struct PitchHeatmap: Codable, Equatable {
+    static let columns = 16
+    static let rows = 10
+
+    /// Sorfolytonos cellák, mindegyikben az ott töltött idő másodpercben.
+    var cells: [Double]
+    /// A mozgásterület hosszabbik és rövidebbik oldala méterben.
+    var lengthMeters: Double
+    var widthMeters: Double
+    var sampleCount: Int
+
+    var peak: Double { cells.max() ?? 0 }
+    var totalTime: TimeInterval { cells.reduce(0, +) }
+
+    var sizeLabel: String {
+        String(format: "%.0f × %.0f m", lengthMeters, widthMeters)
+    }
+
+    func value(column: Int, row: Int) -> Double {
+        guard column >= 0, column < Self.columns, row >= 0, row < Self.rows else { return 0 }
+        let index = row * Self.columns + column
+        return index < cells.count ? cells[index] : 0
+    }
+}
+
 /// Egy lejátszott meccs, ahogy a meccstörténetben megőrizzük.
 struct MatchRecord: Codable, Identifiable, Equatable {
     var id = UUID()
@@ -87,6 +120,12 @@ struct MatchRecord: Codable, Identifiable, Equatable {
     var activeEnergy: Double = 0
     /// Melyik csapat volt a sajátod – ebből számoljuk a mérleget.
     var myTeam: Team = .green
+    /// Mozgás-hőtérkép, ha volt hozzá elég használható GPS-jel.
+    /// Opcionális, így a régi mentések változatlanul visszaolvashatók.
+    var heatmap: PitchHeatmap?
+    /// Ha nem készült térkép, itt az oka – enélkül a felhasználó csak annyit látna,
+    /// hogy „nincs semmi".
+    var heatmapNote: String?
 }
 
 extension MatchRecord {
@@ -179,6 +218,7 @@ enum MatchSettings {
     private static let showClockKey = "settings.showClock"
     private static let myTeamKey = "settings.myTeam"
     private static let keeperIntervalKey = "settings.keeperIntervalSeconds"
+    private static let pitchHeatmapKey = "settings.pitchHeatmap"
 
     static var halfLengthMinutes: Int {
         get {
@@ -203,6 +243,13 @@ enum MatchSettings {
     static var keeperIntervalSeconds: Int {
         get { UserDefaults.standard.integer(forKey: keeperIntervalKey) }
         set { UserDefaults.standard.set(max(0, newValue), forKey: keeperIntervalKey) }
+    }
+
+    /// Mozgás-hőtérkép rögzítése GPS-szel. Alapból ki: helyengedélyt kér, fogyaszt,
+    /// és fedett pályán úgysem működik.
+    static var pitchHeatmapEnabled: Bool {
+        get { UserDefaults.standard.bool(forKey: pitchHeatmapKey) }
+        set { UserDefaults.standard.set(newValue, forKey: pitchHeatmapKey) }
     }
 
     /// A választható kapuscsere-közök: 3:00-tól 15:00-ig, 30 másodperces lépésekben.

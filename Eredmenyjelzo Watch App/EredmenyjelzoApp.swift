@@ -4,12 +4,14 @@ import SwiftUI
 struct EredmenyjelzoApp: App {
     @StateObject private var match = MatchModel()
     @StateObject private var workoutManager = WorkoutManager()
+    @StateObject private var pitchTracker = PitchTracker()
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environmentObject(match)
                 .environmentObject(workoutManager)
+                .environmentObject(pitchTracker)
                 .task {
                     // A pulzusértékek a meccs idővonalára kerülnek.
                     workoutManager.heartRateHandler = { [weak match] bpm in

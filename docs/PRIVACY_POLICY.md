@@ -36,6 +36,22 @@ adatokat semmilyen célra (pl. reklám) nem használjuk fel. A HealthKit
 hozzáférést bármikor visszavonhatod az iPhone Egészség appjában vagy az óra
 beállításaiban.
 
+### Helyadatok (mozgás-hőtérkép)
+
+Ez a funkció **alapértelmezés szerint ki van kapcsolva**, és csak akkor működik,
+ha te kapcsolod be a beállításokban. Bekapcsolva az App a meccs ideje alatt
+rögzíti az óra helyzetét, hogy megmutassa, a pálya mely részén mennyi időt
+töltöttél.
+
+- A helyadatot **csak a meccs alatt** gyűjtjük, a meccs végén a rögzítés leáll.
+- A nyers koordinátákat **nem tároljuk**: a meccs végén egy relatív rácsot
+  számolunk belőlük (melyik cellában mennyi időt töltöttél), és csak ez kerül
+  mentésre. Ebből a pálya földrajzi helye nem állítható vissza.
+- Az adat **kizárólag az órádon marad**, sehová nem küldjük el.
+- A hozzáférést bármikor visszavonhatod az óra Beállítások → Adatvédelem és
+  biztonság → Helymeghatározás menüjében, vagy egyszerűen kikapcsolhatod a
+  funkciót az Appban.
+
 ### A meccs eredménye
 
 A meccs állása és a beállítások csak az App futása alatt, az eszköz memóriájában
@@ -82,6 +98,20 @@ The App does **not** transmit, copy, or share this data with us or any third
 party, and never uses health data for any purpose such as advertising. You can
 revoke HealthKit access at any time in the Health app on iPhone or in your
 watch settings.
+
+### Location data (movement heat map)
+
+This feature is **off by default** and only works if you turn it on in settings.
+When enabled, the App records the watch's position during a match to show where
+on the pitch you spent your time.
+
+- Location is collected **only during a match**; recording stops when the match ends.
+- Raw coordinates are **not stored**. At the end of the match they are reduced to
+  a relative grid (how long you spent in each cell), and only that grid is saved.
+  The geographic location of the pitch cannot be recovered from it.
+- The data **stays on your watch only** and is never transmitted anywhere.
+- You can revoke access at any time in Settings → Privacy & Security → Location
+  Services on the watch, or simply turn the feature off in the App.
 
 ### Match score
 

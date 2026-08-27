@@ -4,6 +4,7 @@ import UserNotifications
 struct StartView: View {
     @EnvironmentObject private var match: MatchModel
     @EnvironmentObject private var workoutManager: WorkoutManager
+    @EnvironmentObject private var pitchTracker: PitchTracker
 
     @State private var hasResumableMatch = false
 
@@ -20,6 +21,7 @@ struct StartView: View {
 
                 Button {
                     workoutManager.startWorkout()
+                    startTrackingIfEnabled()
                     match.startMatch()
                 } label: {
                     Label(hasResumableMatch ? "Új meccs" : "Meccs indítása", systemImage: "play.fill")
@@ -64,6 +66,12 @@ struct StartView: View {
         }
     }
 
+    /// A hőtérkép opcionális, ezért csak akkor nyúlunk a helyadatokhoz, ha be van kapcsolva.
+    private func startTrackingIfEnabled() {
+        guard match.pitchHeatmapEnabled else { return }
+        pitchTracker.start()
+    }
+
     /// Félbehagyott meccs folytatása – pl. ha a rendszer kilőtte az appot.
     private var resumeSection: some View {
         VStack(spacing: 3) {
@@ -73,6 +81,7 @@ struct StartView: View {
 
             Button {
                 workoutManager.startWorkout()
+                startTrackingIfEnabled()
                 match.resumeSavedMatch()
             } label: {
                 Label("Folytatás", systemImage: "arrow.clockwise")
@@ -94,6 +103,7 @@ struct StartView: View {
 struct MatchSettingsView: View {
     @EnvironmentObject private var match: MatchModel
     @EnvironmentObject private var workoutManager: WorkoutManager
+    @EnvironmentObject private var pitchTracker: PitchTracker
 
     @State private var notificationsDenied = false
 
@@ -146,6 +156,24 @@ struct MatchSettingsView: View {
             Text("Ha játék közben nem érzed: Beállítások → Hangok és haptika → Haptika erőssége feljebb, és a Kiemelt haptika bekapcsolva.")
                 .font(.caption2)
                 .foregroundStyle(.orange)
+
+            Toggle(isOn: Binding(get: { match.pitchHeatmapEnabled },
+                                 set: { enabled in
+                                     match.pitchHeatmapEnabled = enabled
+                                     if enabled { pitchTracker.requestAuthorization() }
+                                 })) {
+                Label("Mozgás-hőtérkép", systemImage: "map")
+            }
+
+            Text("Csak nyílt terepen működik, fedett pályán nincs GPS-jel. Hagyd a telefont hatótávon kívül – különben az óra annak a helyadatát veheti át, és a térkép a partvonalra ragad.")
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+
+            if let problem = pitchTracker.locationProblem {
+                Label(problem, systemImage: "location.slash")
+                    .font(.caption2)
+                    .foregroundStyle(.orange)
+            }
 
             Text("Action Button: gól a saját csapatnak. Double Tap és a bal oldali + gomb: gól az ellenfélnek.")
                 .font(.caption2)

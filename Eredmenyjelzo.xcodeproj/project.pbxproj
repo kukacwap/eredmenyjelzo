@@ -468,6 +468,7 @@
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "A pulzus \U00e9s az edz\U00e9sadatok megjelen\U00edt\U00e9s\U00e9hez olvassuk az eg\U00e9szs\U00e9g\U00fcgyi adatokat.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "A meccset labdar\U00fag\U00e1s edz\U00e9sk\U00e9nt mentj\U00fck az Eg\U00e9szs\U00e9g appba.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "A meccs alatti mozg\U00e1s-h\U0151t\U00e9rk\U00e9phez haszn\U00e1ljuk a helyadatokat. Az \U00f3r\U00e1n maradnak, sehov\U00e1 nem k\U00fcldj\U00fck.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -505,6 +506,7 @@
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "A pulzus \U00e9s az edz\U00e9sadatok megjelen\U00edt\U00e9s\U00e9hez olvassuk az eg\U00e9szs\U00e9g\U00fcgyi adatokat.";
 				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "A meccset labdar\U00fag\U00e1s edz\U00e9sk\U00e9nt mentj\U00fck az Eg\U00e9szs\U00e9g appba.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "A meccs alatti mozg\U00e1s-h\U0151t\U00e9rk\U00e9phez haszn\U00e1ljuk a helyadatokat. Az \U00f3r\U00e1n maradnak, sehov\U00e1 nem k\U00fcldj\U00fck.";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

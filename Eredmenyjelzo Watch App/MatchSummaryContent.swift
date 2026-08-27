@@ -46,6 +46,16 @@ struct MatchSummaryContent: View {
                         tint: .orange)
             }
 
+            if let heatmap = record.heatmap {
+                PitchHeatmapView(heatmap: heatmap)
+                    .padding(.top, 2)
+            } else if let note = record.heatmapNote {
+                Label(note, systemImage: "map")
+                    .font(.system(size: 9))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.leading)
+            }
+
             if !record.goals.isEmpty {
                 goalTimeline
             }

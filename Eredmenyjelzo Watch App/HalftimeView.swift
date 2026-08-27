@@ -3,6 +3,7 @@ import SwiftUI
 struct HalftimeView: View {
     @EnvironmentObject private var match: MatchModel
     @EnvironmentObject private var workoutManager: WorkoutManager
+    @EnvironmentObject private var pitchTracker: PitchTracker
 
     @State private var isMenuPresented = false
 
@@ -31,6 +32,7 @@ struct HalftimeView: View {
 
             Button {
                 workoutManager.resumeWorkout()
+                pitchTracker.resume()
                 match.startSecondHalf()
             } label: {
                 Label("2. félidő", systemImage: "play.fill")

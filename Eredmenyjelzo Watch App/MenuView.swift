@@ -3,6 +3,7 @@ import SwiftUI
 struct MenuView: View {
     @EnvironmentObject private var match: MatchModel
     @EnvironmentObject private var workoutManager: WorkoutManager
+    @EnvironmentObject private var pitchTracker: PitchTracker
     @Environment(\.dismiss) private var dismiss
 
     @State private var isEndConfirmationPresented = false
@@ -21,9 +22,11 @@ struct MenuView: View {
                         if match.isClockRunning {
                             match.pauseClock()
                             workoutManager.pauseWorkout()
+                            pitchTracker.pause()
                         } else {
                             match.resumeClock()
                             workoutManager.resumeWorkout()
+                            pitchTracker.resume()
                         }
                         dismiss()
                     } label: {
@@ -36,6 +39,7 @@ struct MenuView: View {
                     Button {
                         match.startHalftime()
                         workoutManager.pauseWorkout()
+                        pitchTracker.pause()
                         dismiss()
                     } label: {
                         Label("Félidő", systemImage: "flag.2.crossed")
@@ -99,9 +103,12 @@ struct MenuView: View {
                                 titleVisibility: .visible) {
                 Button("Meccs vége", role: .destructive) {
                     workoutManager.endWorkout()
+                    let track = pitchTracker.finish(workoutDistanceMeters: workoutManager.distanceMeters)
                     match.endMatch(averageHeartRate: workoutManager.averageHeartRate,
                                    maxHeartRate: workoutManager.maxHeartRate,
-                                   activeEnergy: workoutManager.activeEnergy)
+                                   activeEnergy: workoutManager.activeEnergy,
+                                   heatmap: track.heatmap,
+                                   heatmapNote: track.note)
                     dismiss()
                 }
                 Button("Mégse", role: .cancel) {}
