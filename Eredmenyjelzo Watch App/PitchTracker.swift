@@ -110,14 +110,6 @@ final class PitchTracker: NSObject, ObservableObject {
         return Self.buildHeatmap(from: collected, workoutDistanceMeters: workoutDistanceMeters)
     }
 
-    func cancel() {
-        manager.stopUpdatingLocation()
-        isTracking = false
-        isPaused = false
-        points = []
-        origin = nil
-    }
-
     // MARK: - Hőtérkép építése
 
     /// Tiszta függvény: pontfelhőből rács. Nincs benne se hálózat, se UI, se állapot.
