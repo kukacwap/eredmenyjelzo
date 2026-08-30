@@ -181,6 +181,13 @@ No login, no account, no demo credentials and no sample files are required.
   the match as a Soccer workout and show heart rate) and notification
   permission (for the optional goalkeeper-rotation alert). Both are optional -
   the scoreboard works if either is denied.
+- Location permission is NOT requested on launch. It is requested only if the
+  user turns on the optional "Mozgas-hoterkep" (movement heat map) switch in
+  settings, which is OFF by default. When on, the app records the watch's
+  position during a match to draw a heat map of where the player spent time on
+  the pitch. Raw coordinates are never stored: at the end of the match they are
+  reduced to a relative 16x10 grid of dwell times, and only that grid is saved.
+  Nothing is transmitted off the device.
 - Tap "Meccs inditasa" (Start match) to begin.
 - To score: turn the Digital Crown UP for the green team (top number) or DOWN
   for the white team (bottom number). Several clicks are required so that
@@ -200,10 +207,11 @@ The user interface is in Hungarian only.
 
 5. EXTERNAL SERVICES, TOOLS OR PLATFORMS
 None. The app uses only Apple frameworks: SwiftUI, HealthKit (Soccer workout,
-heart rate, active energy), UserNotifications (local notifications only, no
-push server), App Intents (Action Button / Shortcuts) and UserDefaults for
-local storage. There are no third-party SDKs, no analytics, no advertising,
-no authentication service, no payment processing and no AI services. The app
+heart rate, active energy), CoreLocation (optional, off by default, for the
+movement heat map), UserNotifications (local notifications only, no push
+server), App Intents (Action Button / Shortcuts) and UserDefaults for local
+storage. There are no third-party SDKs, no analytics, no advertising, no
+authentication service, no payment processing and no AI services. The app
 makes no network requests of any kind and collects no data.
 
 6. REGIONAL DIFFERENCES
@@ -217,6 +225,9 @@ third-party material. It reads heart rate, active energy and distance from
 HealthKit solely to display them to the user during their own workout, and
 writes a Soccer workout to the Health app. All health data stays on the
 device: it is never transmitted, shared with anyone, or used for advertising.
+Location data, when the optional heat map is enabled, is treated the same way:
+it is used only to draw the user's own movement map, is reduced to a relative
+grid at the end of the match, stays on the device and is never transmitted.
 The app is not a medical device and makes no health or medical claims. All
 artwork and text in the app are original.
 

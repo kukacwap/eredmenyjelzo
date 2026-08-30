@@ -19,7 +19,7 @@ található, hogy hozzáadhasd az **English (U.S.)** lokalizációt.
 | **Korhatár (Age Rating)** | 4+ |
 | **Ár** | Ingyenes (0-ás ársáv) |
 | **Platform** | watchOS (önálló Apple Watch app) |
-| **Verzió** | 1.1 |
+| **Verzió** | 1.2 |
 
 > Az „App Name" és „Subtitle" App Store-ban egyedi kell legyen. Ha az
 > „Eredményjelző" foglalt, javaslat: „Foci Eredményjelző" vagy
@@ -164,7 +164,28 @@ No sign-up, no ads, no data collection.
 
 ---
 
-## Újdonságok (What's New in This Version – 1.1)
+## Újdonságok (What's New in This Version – 1.2)
+
+**HU:**
+```
+Mozgás-hőtérkép. 🗺️
+• Új, kapcsolható funkció: a meccs végén megmutatja, a pálya melyik részén
+  mennyi időt töltöttél
+• Csak nyílt terepen működik, és alapból ki van kapcsolva
+• A helyadat nem hagyja el az órát
+```
+
+**EN:**
+```
+Movement heat map. 🗺️
+• New optional feature: see where on the pitch you spent your time
+• Works outdoors only, and is switched off by default
+• Location data never leaves your watch
+```
+
+---
+
+## Újdonságok – 1.1 (archív)
 
 **HU:**
 ```

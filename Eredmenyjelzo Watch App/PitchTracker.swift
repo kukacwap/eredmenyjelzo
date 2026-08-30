@@ -183,8 +183,8 @@ final class PitchTracker: NSObject, ObservableObject {
         for (current, next) in zip(rotated, rotated.dropFirst()) {
             let elapsed = min(maxGap, max(0, next.time.timeIntervalSince(current.time)))
             guard elapsed > 0 else { continue }
-            let column = index((current.u - minU) / length, steps: PitchHeatmap.columns)
-            let row = index((current.v - minV) / width, steps: PitchHeatmap.rows)
+            let column = gridIndex((current.u - minU) / length, steps: PitchHeatmap.columns)
+            let row = gridIndex((current.v - minV) / width, steps: PitchHeatmap.rows)
             cells[row * PitchHeatmap.columns + column] += elapsed
         }
 
@@ -203,9 +203,9 @@ final class PitchTracker: NSObject, ObservableObject {
         _ points: [(u: Double, v: Double, time: Date)]
     ) -> [(u: Double, v: Double)] {
         let half = smoothingWindow / 2
-        return points.indices.map { index in
-            let lower = max(0, index - half)
-            let upper = min(points.count - 1, index + half)
+        return points.indices.map { position -> (u: Double, v: Double) in
+            let lower = max(0, position - half)
+            let upper = min(points.count - 1, position + half)
             let window = points[lower...upper]
             let count = Double(window.count)
             return (window.reduce(0) { $0 + $1.u } / count,
@@ -219,7 +219,7 @@ final class PitchTracker: NSObject, ObservableObject {
         return sorted[min(max(position, 0), sorted.count - 1)]
     }
 
-    private static func index(_ normalized: Double, steps: Int) -> Int {
+    private static func gridIndex(_ normalized: Double, steps: Int) -> Int {
         min(steps - 1, max(0, Int(normalized * Double(steps))))
     }
 }
@@ -250,8 +250,11 @@ extension PitchTracker: CLLocationManagerDelegate {
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        // A CoreLocation átmeneti hibát is jelez, amíg keresi a jelet. Csak az
+        // elutasítás végleges – egyébként némán tovább próbálkozunk.
+        guard (error as? CLError)?.code == .denied else { return }
         DispatchQueue.main.async {
-            self.locationProblem = "Helymeghatározás: \(error.localizedDescription)"
+            self.locationProblem = "A helymeghatározás le van tiltva, hőtérkép nem készül."
         }
     }
 
