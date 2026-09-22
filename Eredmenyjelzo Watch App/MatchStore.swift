@@ -91,6 +91,9 @@ struct PitchHeatmap: Codable, Equatable {
     var lengthMeters: Double
     var widthMeters: Double
     var sampleCount: Int
+    /// A felhasznált fixek medián pontossága méterben. Opcionális, mert az első
+    /// hőtérképes meccsek még nem mentették.
+    var medianAccuracy: Double?
 
     var peak: Double { cells.max() ?? 0 }
     var totalTime: TimeInterval { cells.reduce(0, +) }
@@ -103,6 +106,55 @@ struct PitchHeatmap: Codable, Equatable {
         guard column >= 0, column < Self.columns, row >= 0, row < Self.rows else { return 0 }
         let index = row * Self.columns + column
         return index < cells.count ? cells[index] : 0
+    }
+
+    /// Az idő megoszlása a pálya hossza mentén, a bal oldalt feltételezett saját
+    /// kaputól. Harmadokra bontva a GPS-zaj sokkal kevésbé számít, mint cellánként.
+    var thirds: (back: Double, middle: Double, front: Double) {
+        let total = totalTime
+        guard total > 0 else { return (0, 0, 0) }
+        var back = 0.0, middle = 0.0, front = 0.0
+        for row in 0..<Self.rows {
+            for column in 0..<Self.columns {
+                // Oszlopközép szerint: 5 + 6 + 5 oszlop, szimmetrikusan.
+                let center = (Double(column) + 0.5) / Double(Self.columns)
+                let seconds = value(column: column, row: row)
+                if center < 1.0 / 3 {
+                    back += seconds
+                } else if center > 2.0 / 3 {
+                    front += seconds
+                } else {
+                    middle += seconds
+                }
+            }
+        }
+        return (back / total, middle / total, front / total)
+    }
+
+    /// A GPS-ből a pálya tengelye kiszámolható, az iránya nem: nem tudjuk, melyik
+    /// vége a saját kapu, és melyik oldal a bal. Ezt a felhasználó állítja be.
+    func mirroredLengthwise() -> PitchHeatmap {
+        guard cells.count == Self.columns * Self.rows else { return self }
+        var copy = self
+        for row in 0..<Self.rows {
+            for column in 0..<Self.columns {
+                copy.cells[row * Self.columns + column] =
+                    value(column: Self.columns - 1 - column, row: row)
+            }
+        }
+        return copy
+    }
+
+    func mirroredWidthwise() -> PitchHeatmap {
+        guard cells.count == Self.columns * Self.rows else { return self }
+        var copy = self
+        for row in 0..<Self.rows {
+            for column in 0..<Self.columns {
+                copy.cells[row * Self.columns + column] =
+                    value(column: column, row: Self.rows - 1 - row)
+            }
+        }
+        return copy
     }
 }
 
@@ -155,6 +207,13 @@ extension MatchRecord {
         max(heartRateSamples.last?.matchTime ?? 0,
             goals.map(\.matchTime).max() ?? 0,
             60)
+    }
+
+    /// A játékidő mekkora részéről van helyadat a hőtérképben. Ha ez alacsony, a
+    /// térkép csak a jeles pillanatokat mutatja, nem a meccset.
+    var heatmapCoverage: Double? {
+        guard let heatmap, playedTime > 0 else { return nil }
+        return min(1, heatmap.totalTime / playedTime)
     }
 
     /// A gól pillanatához legközelebbi mért pulzus.

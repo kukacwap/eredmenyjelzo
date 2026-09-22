@@ -12,7 +12,9 @@ struct SummaryView: View {
                     .tracking(1.2)
 
                 if let record = match.lastRecord {
-                    MatchSummaryContent(record: record)
+                    MatchSummaryContent(record: record) { heatmap in
+                        match.updateHeatmap(heatmap, forRecord: record.id)
+                    }
                 }
 
                 Button {

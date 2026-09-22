@@ -103,7 +103,8 @@ struct MenuView: View {
                                 titleVisibility: .visible) {
                 Button("Meccs vége", role: .destructive) {
                     workoutManager.endWorkout()
-                    let track = pitchTracker.finish(workoutDistanceMeters: workoutManager.distanceMeters)
+                    let track = pitchTracker.finish(workoutDistanceMeters: workoutManager.distanceMeters,
+                                                    playedTime: match.playedTime(at: Date()))
                     match.endMatch(averageHeartRate: workoutManager.averageHeartRate,
                                    maxHeartRate: workoutManager.maxHeartRate,
                                    activeEnergy: workoutManager.activeEnergy,

@@ -3,6 +3,8 @@ import SwiftUI
 /// A meccs összegzése – ugyanezt mutatja a záróképernyő és a történet egy eleme is.
 struct MatchSummaryContent: View {
     let record: MatchRecord
+    /// A hőtérkép tükrözésekor hívódik – a hívó menti el a történetbe.
+    var onHeatmapChange: ((PitchHeatmap) -> Void)?
 
     var body: some View {
         VStack(spacing: 10) {
@@ -47,7 +49,9 @@ struct MatchSummaryContent: View {
             }
 
             if let heatmap = record.heatmap {
-                PitchHeatmapView(heatmap: heatmap)
+                PitchHeatmapView(heatmap: heatmap,
+                                 playedTime: record.playedTime,
+                                 onChange: onHeatmapChange)
                     .padding(.top, 2)
             } else if let note = record.heatmapNote {
                 Label(note, systemImage: "map")

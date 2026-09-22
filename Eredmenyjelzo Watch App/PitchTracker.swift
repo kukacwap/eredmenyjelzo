@@ -7,6 +7,8 @@ struct PitchPoint {
     var x: Double
     var y: Double
     var time: Date
+    /// A fix becsült pontossága méterben (a CoreLocation `horizontalAccuracy`-je).
+    var accuracy: Double
 }
 
 /// A meccs alatti mozgás rögzítése, majd hőtérképpé alakítása.
@@ -25,8 +27,9 @@ final class PitchTracker: NSObject, ObservableObject {
     private var origin: CLLocation?
     private var isPaused = false
 
-    /// Ennél pontatlanabb fixet eldobunk: kispályán a 20 méter már használhatatlan.
-    private static let accuracyLimit: CLLocationAccuracy = 20
+    /// Ennél pontatlanabb fixet eldobunk. Egy 16–20 m széles pályán ±3–4 m-es hiba
+    /// már egyetlen foltba mossa a szélső játékot és a kaput, ezért szigorú a határ.
+    private static let accuracyLimit: CLLocationAccuracy = 10
     /// Két minta között ennyi időt számítunk be legfeljebb, hogy egy jelkimaradás ne
     /// halmozzon percnyi állást egyetlen cellába.
     private static let maxGap: TimeInterval = 5
@@ -38,6 +41,9 @@ final class PitchTracker: NSObject, ObservableObject {
     private static let minWidthMeters = 5.0
     /// Ennyi mintát átlagolunk, mielőtt a nyom hosszát mérjük.
     private static let smoothingWindow = 5
+    /// A játékidő legalább ekkora részéről kell pontos helyadat. Enélkül a térkép
+    /// csak azokat a pillanatokat mutatná, amikor épp volt jel.
+    private static let minCoverage = 0.5
 
     override init() {
         super.init()
@@ -90,8 +96,10 @@ final class PitchTracker: NSObject, ObservableObject {
     }
 
     /// Lezárja a gyűjtést, és visszaadja a térképet vagy az elmaradás okát.
-    /// A `workoutDistanceMeters` az edzés mért távja – ehhez hasonlítjuk a nyomot.
-    func finish(workoutDistanceMeters: Double) -> (heatmap: PitchHeatmap?, note: String?) {
+    /// A `workoutDistanceMeters` az edzés mért távja – ehhez hasonlítjuk a nyomot,
+    /// a `playedTime` pedig a tiszta játékidő – ehhez a lefedettséget.
+    func finish(workoutDistanceMeters: Double,
+                playedTime: TimeInterval) -> (heatmap: PitchHeatmap?, note: String?) {
         manager.stopUpdatingLocation()
         let wasTracking = isTracking
         isTracking = false
@@ -107,14 +115,17 @@ final class PitchTracker: NSObject, ObservableObject {
         if let locationProblem {
             return (nil, locationProblem)
         }
-        return Self.buildHeatmap(from: collected, workoutDistanceMeters: workoutDistanceMeters)
+        return Self.buildHeatmap(from: collected,
+                                 workoutDistanceMeters: workoutDistanceMeters,
+                                 playedTime: playedTime)
     }
 
     // MARK: - Hőtérkép építése
 
     /// Tiszta függvény: pontfelhőből rács. Nincs benne se hálózat, se UI, se állapot.
     static func buildHeatmap(from points: [PitchPoint],
-                             workoutDistanceMeters: Double) -> (PitchHeatmap?, String?) {
+                             workoutDistanceMeters: Double,
+                             playedTime: TimeInterval) -> (PitchHeatmap?, String?) {
         guard points.count >= minSamples else {
             return (nil, "Nem volt elég GPS-jel a hőtérképhez.")
         }
@@ -180,12 +191,21 @@ final class PitchTracker: NSObject, ObservableObject {
             cells[row * PitchHeatmap.columns + column] += elapsed
         }
 
+        let accuracies = points.map(\.accuracy).sorted()
         let heatmap = PitchHeatmap(cells: cells,
                                    lengthMeters: length,
                                    widthMeters: width,
-                                   sampleCount: points.count)
+                                   sampleCount: points.count,
+                                   medianAccuracy: percentile(accuracies, 0.5))
         guard heatmap.totalTime >= 60 else {
             return (nil, "Túl rövid ideig volt GPS-jel a hőtérképhez.")
+        }
+        if playedTime > 0 {
+            let coverage = heatmap.totalTime / playedTime
+            if coverage < minCoverage {
+                let percent = Int((coverage * 100).rounded())
+                return (nil, "Csak a játékidő \(percent)%-áról volt pontos GPS-jel – ez kevés egy valós térképhez.")
+            }
         }
         return (heatmap, nil)
     }
@@ -226,7 +246,8 @@ extension PitchTracker: CLLocationManagerDelegate {
 
                 guard let origin = self.origin else {
                     self.origin = location
-                    self.points.append(PitchPoint(x: 0, y: 0, time: location.timestamp))
+                    self.points.append(PitchPoint(x: 0, y: 0, time: location.timestamp,
+                                                  accuracy: location.horizontalAccuracy))
                     continue
                 }
 
@@ -236,7 +257,8 @@ extension PitchTracker: CLLocationManagerDelegate {
                 let dy = (location.coordinate.latitude - origin.coordinate.latitude) * metersPerDegree
                 let dx = (location.coordinate.longitude - origin.coordinate.longitude)
                     * metersPerDegree * latitudeScale
-                self.points.append(PitchPoint(x: dx, y: dy, time: location.timestamp))
+                self.points.append(PitchPoint(x: dx, y: dy, time: location.timestamp,
+                                              accuracy: location.horizontalAccuracy))
             }
         }
     }

@@ -82,11 +82,20 @@ struct HistoryView: View {
 }
 
 struct MatchDetailView: View {
+    @EnvironmentObject private var match: MatchModel
+
     let record: MatchRecord
+
+    /// A történetből olvassuk vissza, hogy a tükrözés azonnal látsszon.
+    private var current: MatchRecord {
+        match.history.first { $0.id == record.id } ?? record
+    }
 
     var body: some View {
         ScrollView {
-            MatchSummaryContent(record: record)
+            MatchSummaryContent(record: current) { heatmap in
+                match.updateHeatmap(heatmap, forRecord: record.id)
+            }
         }
         .navigationTitle(record.date.formatted(date: .abbreviated, time: .omitted))
     }

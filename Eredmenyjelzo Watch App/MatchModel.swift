@@ -48,6 +48,9 @@ final class MatchModel: ObservableObject {
 
     func matchTime(at date: Date) -> TimeInterval { state.matchTime(at: date) }
 
+    /// Tiszta játékidő a futó szakasszal együtt – a hőtérkép lefedettségéhez.
+    func playedTime(at date: Date) -> TimeInterval { state.playedTime(at: date) }
+
     // MARK: - Beállítások
 
     // A beállítások a meccstől függetlenül tárolódnak, ezért kézzel jelezzük a változást.
@@ -191,6 +194,17 @@ final class MatchModel: ObservableObject {
     func clearHistory() {
         history = []
         MatchHistory.save(history)
+    }
+
+    /// A hőtérkép tájolását a felhasználó állítja be, ezt a történetben is megőrizzük.
+    func updateHeatmap(_ heatmap: PitchHeatmap, forRecord id: UUID) {
+        if let index = history.firstIndex(where: { $0.id == id }) {
+            history[index].heatmap = heatmap
+            MatchHistory.save(history)
+        }
+        if lastRecord?.id == id {
+            lastRecord?.heatmap = heatmap
+        }
     }
 
     // MARK: - Pulzus
