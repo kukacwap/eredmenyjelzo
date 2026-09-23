@@ -345,6 +345,29 @@ grep -rl "Hello, world" ~/Library/Developer/Xcode/Archives/*/*.xcarchive/Product
 
 ---
 
+## Feltöltés parancssorból (Organizer helyett)
+
+Ugyanazt csinálja, mint az Archive → Distribute App → App Store Connect → Upload,
+csak Terminalból. Az Xcode-ban bejelentkezett Apple-fiókot használja
+(Xcode → Settings → Accounts), a beállítások az `ExportOptions.plist`-ben vannak.
+A `build/` mappa a `.gitignore`-ban van, nem kerül a repóba.
+
+```bash
+cd ~/Documents/eredmenyjelzo-app
+xcodebuild -project Eredmenyjelzo.xcodeproj -scheme "eredmenyjelzo Watch App" -destination "generic/platform=watchOS" -archivePath build/Eredmenyjelzo.xcarchive archive
+grep -rl "Hello, world" build/Eredmenyjelzo.xcarchive/Products/
+xcodebuild -exportArchive -archivePath build/Eredmenyjelzo.xcarchive -exportOptionsPlist ExportOptions.plist -exportPath build/export -allowProvisioningUpdates
+```
+
+- Az első parancs végén `** ARCHIVE SUCCEEDED **` kell álljon.
+- A `grep` **ne írjon ki semmit** – ha kiír, a sablon került a binárisba, ne töltsd fel.
+- A harmadik végén `** EXPORT SUCCEEDED **` és „Upload succeeded" – utána 5–30 perc
+  múlva megjelenik a build a TestFlight fülön.
+- Ha a séma nem található: `xcodebuild -list -project Eredmenyjelzo.xcodeproj`
+  kiírja a pontos nevét.
+
+---
+
 ## Verzió-emelés a jövőben
 
 Új kiadásnál:
